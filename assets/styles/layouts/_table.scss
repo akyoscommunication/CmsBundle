@@ -1,0 +1,43 @@
+.aky-table {
+    &-head {
+        tr {
+            th {
+                border: none;
+
+                &.sorted {
+                    background-color: $grey;
+                    border-bottom: 2px solid $black;
+                }
+
+                .sortable {
+                    @include flex(row-reverse, nowrap, flex-end, center);
+
+                    span {
+                        float: none;
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+    }
+
+    &-body {
+        tr {
+            background-color: $grey;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+
+            &:nth-child(even) {
+                background-color: $white;
+            }
+
+            td {
+                border: none;
+            }
+        }
+    }
+
+    .form-control {
+        border: none;
+    }
+}

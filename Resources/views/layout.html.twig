@@ -1,0 +1,43 @@
+{% extends '@AkyosCore/layout/base.html.twig' %}
+
+ {% block body %}
+     <div class="wrapper"
+          style="{{ core_options and core_options.backMaincolor ? "--color-back-main-color:"~core_options.backMaincolor~";--color-back-main-contrast-color:"~blackOrWhite(core_options.backMaincolor)~";" : "" }}">
+         <!-- Sidebar  -->
+         {{ render(controller('Akyos\\CoreBundle\\Controller\\Back\\CoreBundleController::sidebar', {'route': app.request.attributes.get('_route')})) }}
+
+         <!-- Page Content  -->
+         <div id="main">
+             {% include "@AkyosCore/layout/header.html.twig" %}
+             <div class="flashbag">{{ _self.render_flashbag() }}</div>
+             {% block page_content %}{% endblock %}
+             {# {% include "@AkyosCore/layout/footer.html.twig" %} #}
+         </div>
+     </div>
+ {% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('symfony-collection/jquery.collection.js') }}"></script>
+    <script src="{{ asset('bundles/akyoscore/main.js') }}"></script>
+    <script src="{{ asset('bundles/akyosfilemanager/main.js') }}"></script>
+{% endblock %}
+
+ {% block stylesheets %}
+     <link rel="stylesheet" href="{{ asset('bundles/akyoscore/main.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/akyosfilemanager/main.css') }}">
+ {% endblock %}
+
+{% macro render_flashbag() %}
+    {% for type, messages in app.session.flashbag.all() %}
+        {% for message in messages %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-{{ type }} alert-dismissable animation-slideRight">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <p>{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}
