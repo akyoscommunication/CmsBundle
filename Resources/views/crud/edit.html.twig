@@ -4,7 +4,7 @@
 
 {% block page_content %}
 
-    {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title': 'Éditer '~title, 'parameters': (parameters is defined ? parameters : {}), 'button_back': true, 'header_route' : header_route is defined ? header_route : null} %}
+    {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title': 'Éditer '~title, 'parameters': (parameters is defined ? parameters : {}), 'button_back': true, 'header_route' : header_route is defined ? header_route : null} %}
 
     <div class="content" data-type="{{ entity is defined ? entity : '' }}"
          data-typeid="{{ el.id is defined ? el.id : '' }}">
@@ -17,7 +17,7 @@
                            id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general"
                            aria-selected="true">Général</a>
                     </li>
-                    {% if entity is defined and entity is same as ('Akyos\\BlogBundle\\Entity\\Post') and cms_options.hasPostDocuments %}
+                    {% if entity is defined and entity is same as ('Akyos\\BlogBundle\\Entity\\Post') and blog_options and blog_options.hasPostDocuments %}
                         <li class="nav-item">
                             <a class="nav-link {{ app.request.get('tab') == 'postdoc' ? 'active' : '' }}"
                                id="postdoc-tab" data-toggle="tab" href="#postdoc" role="tab" aria-controls="postdoc"
@@ -50,11 +50,11 @@
                         {{ form_end(form) }}
                     </div>
                     {# POSTDOCUMENT #}
-                    {% if entity is defined and entity is same as ('Akyos\\BlogBundle\\Entity\\Post')    and cms_options.hasPostDocuments %}
+                    {% if entity is defined and entity is same as ('Akyos\\BlogBundle\\Entity\\Post') and blog_options and blog_options.hasPostDocuments %}
                         <div class="tab-pane fade {{ app.request.get('tab') == 'postdoc' ? 'show active' : '' }}"
                              id="postdoc" role="tabpanel" aria-labelledby="postdoc-tab">
                             <div class="aky-header-page">
-                                {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title': 'Documents', 'parameters': {'id': el.id}, 'button_add': true, 'header_route' : 'post_document' } %}
+                                {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title': 'Documents', 'parameters': {'id': el.id}, 'button_add': true, 'header_route' : 'post_document' } %}
                             </div>
                             <table class="table aky-table">
                                 <thead class="aky-table-head">
@@ -125,12 +125,12 @@
                     {% endif %}
                     {# OPTIONS #}
                     <div class="tab-pane fade" id="options" role="tabpanel" aria-labelledby="options-tab">
-                        {{ include('@AkyosCore/crud/_delete_form.html.twig') }}
+                        {{ include('@AkyosCms/crud/_delete_form.html.twig') }}
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
-                {% include '@AkyosCore/crud/elements/_sidebar.html.twig' %}
+                {% include '@AkyosCms/crud/elements/_sidebar.html.twig' %}
             </div>
         </div>
     </div>

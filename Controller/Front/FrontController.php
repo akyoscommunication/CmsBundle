@@ -267,7 +267,7 @@ class FrontController extends AbstractController
 		// GET TEMPLATE
 		$view = $filesystem->exists($this->kernel->getProjectDir() . '/templates/' . $entity . '/category.html.twig')
 			? "${entity}/category.html.twig"
-			: '@AkyosCore/front/category.html.twig';
+			: '@AkyosCms/front/category.html.twig';
 
 		// RENDER
 		return $this->render($view, [

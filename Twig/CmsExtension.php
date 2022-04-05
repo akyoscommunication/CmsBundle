@@ -37,7 +37,6 @@ class CmsExtension extends AbstractExtension
 		$this->router = $router;
 		$this->cmsOptionsRepository = $cmsOptionsRepository;
 		$this->cmsService = $cmsService;
-		
 	}
 
     /**
@@ -73,9 +72,9 @@ class CmsExtension extends AbstractExtension
     /**
      * @param $el
      * @param $field
-     * @return string
+     * @return mixed
      */
-	public function dynamicVariable($el, $field): string
+	public function dynamicVariable($el, $field)
     {
 		$getter = 'get' . $field;
 		if (count(explode(';', $field)) > 1) {

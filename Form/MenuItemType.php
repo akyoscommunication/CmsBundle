@@ -16,7 +16,7 @@ class MenuItemType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 	    /** @var Menu $menu */
-	    $menu = $options['data'];
+	    $menu = $options['menu'];
 
 		$builder
 			->add('title', null, [

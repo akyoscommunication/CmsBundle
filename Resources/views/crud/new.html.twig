@@ -4,7 +4,7 @@
 
 {% block page_content %}
     <div class="aky-header-page">
-        {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title': title, 'button_back': true, 'header_route' : route~'_index'} %}
+        {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title': title, 'button_back': true, 'header_route' : route~'_index'} %}
     </div>
 
     <div class="content">
@@ -20,7 +20,7 @@
         <div class="tab-content" id="tabsContent">
             {# GENERAL #}
             <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-                {% include '@AkyosCore/crud/_form.html.twig' with {'button_label': 'Ajouter'} %}
+                {% include '@AkyosCms/crud/_form.html.twig' with {'button_label': 'Ajouter'} %}
             </div>
         </div>
 

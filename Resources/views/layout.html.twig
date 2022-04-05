@@ -1,17 +1,17 @@
-{% extends '@AkyosCore/layout/base.html.twig' %}
+{% extends '@AkyosCms/layout/base.html.twig' %}
 
  {% block body %}
      <div class="wrapper"
           style="{{ cms_options and cms_options.backMaincolor ? "--color-back-main-color:"~cms_options.backMaincolor~";--color-back-main-contrast-color:"~blackOrWhite(cms_options.backMaincolor)~";" : "" }}">
          <!-- Sidebar  -->
-         {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\CmsBundleController::sidebar', {'route': app.request.attributes.get('_route')})) }}
+         {% include "@AkyosCms/layout/sidebar.html.twig" with {'route': app.request.attributes.get('_route')} %}
 
          <!-- Page Content  -->
          <div id="main">
-             {% include "@AkyosCore/layout/header.html.twig" %}
+             {% include "@AkyosCms/layout/header.html.twig" %}
              <div class="flashbag">{{ _self.render_flashbag() }}</div>
              {% block page_content %}{% endblock %}
-             {# {% include "@AkyosCore/layout/footer.html.twig" %} #}
+             {# {% include "@AkyosCms/layout/footer.html.twig" %} #}
          </div>
      </div>
  {% endblock %}

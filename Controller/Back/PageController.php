@@ -94,13 +94,13 @@ class PageController extends AbstractController
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      * @param Request $request
      * @param Page $page
-     * @param CoreService $coreService
+     * @param CmsService $cmsService
      * @param ContainerInterface $container
      * @return Response
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-	public function edit(Request $request, Page $page, CoreService $coreService, ContainerInterface $container): Response
+	public function edit(Request $request, Page $page, CmsService $cmsService, ContainerInterface $container): Response
 	{
 		$entity = get_class($page);
 		$em = $this->getDoctrine()->getManager();
@@ -109,13 +109,13 @@ class PageController extends AbstractController
 
 		$classBuilder = 'Akyos\BuilderBundle\AkyosBuilderBundle';
 		$classBuilderOption = 'Akyos\BuilderBundle\Entity\BuilderOptions';
-		if ($coreService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity) && !$form->isSubmitted()) {
+		if ($cmsService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity) && !$form->isSubmitted()) {
             $container->get('render.builder')->initCloneComponents($entity, $page->getId());
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($coreService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {
+            if ($cmsService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {
                 $container->get('render.builder')->tempToProd($entity, $page->getId());
             }
             $em->flush();
@@ -147,11 +147,11 @@ class PageController extends AbstractController
 	 * @param Page $page
 	 * @param PageRepository $pageRepository
 	 * @param SeoRepository $seoRepository
-	 * @param CoreService $coreService
+	 * @param CmsService $cmsService
 	 * @param ContainerInterface $container
 	 * @return Response
 	 */
-	public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CoreService $coreService, ContainerInterface $container): Response
+	public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CmsService $cmsService, ContainerInterface $container): Response
 	{
 		$entity = get_class($page);
 		if ($this->isCsrfTokenValid('delete' . $page->getId(), $request->request->get('_token'))) {
@@ -159,7 +159,7 @@ class PageController extends AbstractController
 
 			$classBuilder = 'Akyos\BuilderBundle\AkyosBuilderBundle';
 			$classBuilderOption = 'Akyos\BuilderBundle\Entity\BuilderOptions';
-			if ($coreService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {
+			if ($cmsService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {
 				$container->get('render.builder')->onDeleteEntity($entity, $page->getId());
 			}
 

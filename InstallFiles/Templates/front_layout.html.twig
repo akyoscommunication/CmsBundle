@@ -1,4 +1,4 @@
-{% extends '@AkyosCore/front/base.html.twig' %}
+{% extends '@AkyosCms/front/base.html.twig' %}
 
 {% block meta %}
 
@@ -12,10 +12,10 @@
             <div class="row">
                 {% block header %}
                     <div class="col-4">
-                        {% block logo %} {% include '@AkyosCore/front/layouts/logo.html.twig' %} {% endblock %}
+                        {% block logo %} {% include '@AkyosCms/front/layouts/logo.html.twig' %} {% endblock %}
                     </div>
                     <div class="col-8 d-flex justify-content-end">
-                        {% include '@AkyosCore/front/layouts/menu.html.twig' %}
+                        {% include '@AkyosCms/front/layouts/menu.html.twig' %}
                     </div>
                 {% endblock %}
             </div>
@@ -23,12 +23,12 @@
     </header>
     <main>
         {% block main %}
-            {% block titlebar %} {% include '@AkyosCore/front/layouts/titlebar.html.twig' %} {% endblock %}
+            {% block titlebar %} {% include '@AkyosCms/front/layouts/titlebar.html.twig' %} {% endblock %}
             {% block content %} CONTENT {% endblock %}
         {% endblock %}
     </main>
     <footer id="Footer">
-        {% block footer %} {% include '@AkyosCore/front/layouts/footer.html.twig' %} {% endblock %}
+        {% block footer %} {% include '@AkyosCms/front/layouts/footer.html.twig' %} {% endblock %}
     </footer>
     <div id="copyright">
         <div class="container">
@@ -36,7 +36,7 @@
                         href="{{ core_options.agencyLink }}">Réalisation {{ core_options.agencyName }}</a></p>
         </div>
     </div>
-    {% block rgpd %} {% include '@AkyosCore/front/layouts/rgpd.html.twig' %} {% endblock %}
+    {% block rgpd %} {% include '@AkyosCms/front/layouts/rgpd.html.twig' %} {% endblock %}
 
 {% endblock %}
 

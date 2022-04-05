@@ -23,13 +23,6 @@ class CmsBundleController extends AbstractController
 		]);
 	}
 	
-	public function sidebar($route): Response
-	{
-		return $this->render('@AkyosCms/layout/sidebar.html.twig', [
-			'route' => $route
-		]);
-	}
-	
 	public function renderMenu($menu, $page): string
 	{
 		$menuArea = $this->getDoctrine()->getRepository(MenuArea::class)->findOneBy(['slug' => $menu]) ??
