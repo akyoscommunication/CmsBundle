@@ -17,19 +17,19 @@ class RecaptchaController extends AbstractController
     /**
      * @Route("/recaptcha-v3-verify/{action}/{token}", name="v3_verify")
      * @param string $token
-     * @param CmsOptionsRepository $coreOptionsRepository
+     * @param CmsOptionsRepository $cmsOptionsRepository
      * @return JsonResponse
      * @throws JsonException
      */
 	public function recaptchaV3Verify(string $token, CmsOptionsRepository $cmsOptionsRepository): JsonResponse
     {
-		$coreOptions = $cmsOptionsRepository->findAll();
-		if ($coreOptions) {
-			$coreOptions = $coreOptions[0];
+		$cmsOptions = $cmsOptionsRepository->findAll();
+		if ($cmsOptions) {
+			$cmsOptions = $cmsOptions[0];
 		}
 
 		$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-		$recaptcha_private = ($coreOptions->getRecaptchaPrivateKey() ?: null);
+		$recaptcha_private = ($cmsOptions->getRecaptchaPrivateKey() ?: null);
 		$recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_private . '&response=' . $token);
 		$recaptcha = json_decode($recaptcha, true, 512, JSON_THROW_ON_ERROR);
 		if ($recaptcha->success && $recaptcha->score >= 0.8) {

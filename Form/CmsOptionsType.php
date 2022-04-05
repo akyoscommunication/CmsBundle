@@ -37,18 +37,6 @@ class CmsOptionsType extends AbstractType
 				'label' => 'Couleur principale du back office',
 				'required' => false
 			])
-			->add('hasPosts', CheckboxType::class, [
-				'label' => 'Activation du blog',
-				'required' => false
-			])
-			->add('hasPostDocuments', CheckboxType::class, [
-				'label' => 'Activation des documents d\'articles',
-				'required' => false
-			])
-			->add('orderPostsByPosition', CheckboxType::class, [
-				'label' => 'Trier les articles par position ? (dans l\'admin, par défaut triés par date de création)',
-				'required' => false
-			])
 			->add('homepage', EntityType::class, [
 				'label' => "Page d'accueil",
 				'required' => false,
@@ -76,31 +64,31 @@ class CmsOptionsType extends AbstractType
 				'label' => 'Clé privée reCaptcha',
 				'required' => false
 			])
-			->add('emailTransport', ChoiceType::class, [
-				'label' => 'Quel transport utiliser pour l\'envoi des emails (service CoreMailer) ?',
-				'help' => 'L\'utilisation d\'une API nécéssite probablement de renseigner les clés API dans le fichier config/packages/core_bundle.yaml. Pour savoir comment créer ce fichier, regardez dans le Corebundle/InstallFiles/Config/core_bundle.yaml. Veuiller vérifier également que l\'expéditeur noreply@nom_de_domaine soit bien autorisé sur le compte du service.',
-				'required' => false,
-				'attr' => [
-					'class' => 'js-select2'
-				],
-				'choices' => [
-					'Symfony Mailer' => 'Symfony Mailer',
-					'Mailjet API' => 'Mailjet API',
-				],
-				'data' => 'Symfony Mailer',
-			])
-			->add('smsTransport', ChoiceType::class, [
-				'label' => 'Quel transport utiliser pour l\'envoi des SMS (service CoreSMS) ?',
-				'help' => 'L\'utilisation d\'une API nécéssite probablement de renseigner les clés API dans le fichier config/packages/core_bundle.yaml. Pour savoir comment créer ce fichier, regardez dans le Corebundle/InstallFiles/Config/core_bundle.yaml.',
-				'required' => false,
-				'attr' => [
-					'class' => 'js-select2'
-				],
-				'choices' => [
-					'Mailjet SMS' => 'Mailjet SMS',
-					'Twilio SMS' => 'Twilio SMS',
-				]
-			])
+//			->add('emailTransport', ChoiceType::class, [
+//				'label' => 'Quel transport utiliser pour l\'envoi des emails (service CoreMailer) ?',
+//				'help' => 'L\'utilisation d\'une API nécéssite probablement de renseigner les clés API dans le fichier config/packages/core_bundle.yaml. Pour savoir comment créer ce fichier, regardez dans le Corebundle/InstallFiles/Config/core_bundle.yaml. Veuiller vérifier également que l\'expéditeur noreply@nom_de_domaine soit bien autorisé sur le compte du service.',
+//				'required' => false,
+//				'attr' => [
+//					'class' => 'js-select2'
+//				],
+//				'choices' => [
+//					'Symfony Mailer' => 'Symfony Mailer',
+//					'Mailjet API' => 'Mailjet API',
+//				],
+//				'data' => 'Symfony Mailer',
+//			])
+//			->add('smsTransport', ChoiceType::class, [
+//				'label' => 'Quel transport utiliser pour l\'envoi des SMS (service CoreSMS) ?',
+//				'help' => 'L\'utilisation d\'une API nécéssite probablement de renseigner les clés API dans le fichier config/packages/core_bundle.yaml. Pour savoir comment créer ce fichier, regardez dans le Corebundle/InstallFiles/Config/core_bundle.yaml.',
+//				'required' => false,
+//				'attr' => [
+//					'class' => 'js-select2'
+//				],
+//				'choices' => [
+//					'Mailjet SMS' => 'Mailjet SMS',
+//					'Twilio SMS' => 'Twilio SMS',
+//				]
+//			])
 			->add('hasArchiveEntities', ChoiceType::class, [
 				'label' => 'Activer la page archive sur les entités :',
 				'choices' => $options['entities'],

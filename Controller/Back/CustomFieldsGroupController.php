@@ -1,6 +1,6 @@
 <?php
 
-namespace Akyos\CoreBundle\Controller\Back;
+namespace Akyos\CmsBundle\Controller\Back;
 
 use Akyos\CmsBundle\Entity\CustomField;
 use Akyos\CmsBundle\Entity\CustomFieldsGroup;
@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/custom-fields-group", name="custom_fields_group_")
- * @isGranted("champs-personnalises")
+ * @IsGranted("champs-personnalises")
  */
 class CustomFieldsGroupController extends AbstractController
 {
@@ -63,7 +63,7 @@ class CustomFieldsGroupController extends AbstractController
 			return $this->redirectToRoute('custom_fields_group_edit', ['id' => $customFieldsGroup->getId()]);
 		}
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Groupes de champs',
 			'entity' => 'CustomFieldsGroup',
@@ -108,7 +108,7 @@ class CustomFieldsGroupController extends AbstractController
 			return $this->redirectToRoute('custom_fields_group_index');
 		}
 
-		return $this->render('@AkyosCore/crud/new.html.twig', [
+		return $this->render('@AkyosCms/crud/new.html.twig', [
 			'el' => $customFieldsGroup,
 			'title' => 'Groupe de champs',
 			'entity' => 'CustomFieldsGroup',
@@ -150,7 +150,7 @@ class CustomFieldsGroupController extends AbstractController
 			return $this->redirectToRoute('custom_fields_group_index');
 		}
 
-		return $this->render('@AkyosCore/crud/edit.html.twig', [
+		return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $customFieldsGroup,
 			'title' => 'Groupe de champs',
 			'entity' => CustomFieldsGroup::class,

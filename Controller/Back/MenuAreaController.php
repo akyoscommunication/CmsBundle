@@ -6,6 +6,7 @@ use Akyos\CmsBundle\Entity\MenuArea;
 use Akyos\CmsBundle\Form\MenuAreaType;
 use Akyos\CmsBundle\Repository\MenuAreaRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/menu/area", name="menu_area_")
- * @isGranted("zones-de-menus")
+ * @IsGranted("zones-de-menus")
  */
 class MenuAreaController extends AbstractController
 {
@@ -36,7 +37,7 @@ class MenuAreaController extends AbstractController
 		}
 		$els = $paginator->paginate($query->getQuery(), $request->query->getInt('page', 1), 12);
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Zones de menu',
 			'entity' => 'MenuArea',
@@ -71,7 +72,7 @@ class MenuAreaController extends AbstractController
 			return $this->redirectToRoute('menu_area_index');
 		}
 
-		return $this->render('@AkyosCore/crud/new.html.twig', [
+		return $this->render('@AkyosCms/crud/new.html.twig', [
 			'el' => $menuArea,
 			'title' => 'Zone de menu',
 			'entity' => 'MenuArea',
@@ -98,7 +99,7 @@ class MenuAreaController extends AbstractController
 			return $this->redirectToRoute('menu_area_index');
 		}
 
-		return $this->render('@AkyosCore/crud/edit.html.twig', [
+		return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $menuArea,
 			'title' => 'Zone de menu',
 			'entity' => 'MenuArea',

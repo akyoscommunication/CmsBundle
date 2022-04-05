@@ -52,7 +52,7 @@ class UserController extends AbstractController
 			$user->setRoles($newUserRoles);
 		}
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Utilisateurs',
 			'entity' => 'User',
@@ -92,7 +92,7 @@ class UserController extends AbstractController
 			return $this->redirectToRoute('user_index');
 		}
 
-		return $this->render('@AkyosCore/crud/new.html.twig', [
+		return $this->render('@AkyosCms/crud/new.html.twig', [
 			'el' => $user,
 			'title' => 'Utilisateur',
 			'entity' => 'User',
@@ -118,7 +118,7 @@ class UserController extends AbstractController
 			return $this->redirectToRoute('user_index');
 		}
 
-		return $this->render('@AkyosCore/crud/edit.html.twig', [
+		return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $user,
 			'title' => 'Utilisateur',
 			'entity' => 'User',

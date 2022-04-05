@@ -28,8 +28,8 @@ class SidebarController extends AbstractController
 	{
 		$html = "";
 
-		if (class_exists('App\Services\ExtendSidebar')) {
-			$response = $this->forward('App\Services\ExtendSidebar::getTemplate', ['route' => $route]);
+		if (class_exists('App\Service\ExtendSidebar')) {
+			$response = $this->forward('App\Service\ExtendSidebar::getTemplate', ['route' => $route]);
 			$html .= $response->getContent();
 		}
 

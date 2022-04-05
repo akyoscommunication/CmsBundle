@@ -13,7 +13,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/cms/options", name="cms_options")
- * @isGranted("options-du-cms")
  */
 class CmsOptionsController extends AbstractController
 {

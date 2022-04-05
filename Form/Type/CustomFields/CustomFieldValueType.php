@@ -5,7 +5,6 @@ namespace Akyos\CmsBundle\Form\Type\CustomFields;
 use Akyos\CmsBundle\Entity\CustomField;
 use Akyos\CmsBundle\Entity\CustomFieldValue;
 use Akyos\CmsBundle\Repository\PageRepository;
-use Akyos\CmsBundle\Repository\PostRepository;
 use Akyos\FileManagerBundle\Form\Type\FileManagerCollectionType;
 use Akyos\FileManagerBundle\Form\Type\FileManagerType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,18 +28,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CustomFieldValueType extends AbstractType
 {
 	private array $pages;
-	private array $posts;
 	private EntityManagerInterface $em;
 	
-	public function __construct(PageRepository $pageRepository, PostRepository $postRepository, EntityManagerInterface $em)
+	public function __construct(PageRepository $pageRepository, EntityManagerInterface $em)
 	{
 		$pages = $pageRepository->findAll();
 		foreach ($pages as $page) {
 			$this->pages[$page->getTitle()] = $page->getId();
-		}
-		$posts = $postRepository->findAll();
-		foreach ($posts as $post) {
-			$this->posts[$post->getTitle()] = $post->getId();
 		}
 		$this->em = $em;
 	}
@@ -110,16 +104,7 @@ class CustomFieldValueType extends AbstractType
 								'help' => $field->getDescription(),
 							]);
 						break;
-					
-					case 'postlink':
-						$form
-							->add('value', ChoiceType::class, [
-								'choices' => $this->posts,
-								'required' => $field->getIsRequired() ?? false,
-								'label' => $field->getTitle(),
-								'help' => $field->getDescription(),
-							]);
-						break;
+
 					case 'entity':
 						$choices = [];
 						$elements = $this->em->getRepository($field->getEntity())->findAll();

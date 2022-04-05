@@ -8,7 +8,7 @@ use Akyos\CmsBundle\Form\Type\Page\NewPageType;
 use Akyos\CmsBundle\Form\Type\Page\PageType;
 use Akyos\CmsBundle\Repository\PageRepository;
 use Akyos\CmsBundle\Repository\SeoRepository;
-use Akyos\CmsBundle\Services\CmsService;
+use Akyos\CmsBundle\Service\CmsService;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -21,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/page", name="page_")
- * @isGranted("pages")
+ * @IsGranted("pages")
  */
 class PageController extends AbstractController
 {
@@ -53,7 +53,7 @@ class PageController extends AbstractController
 			return $this->redirectToRoute('page_edit', ['id' => $page->getId()]);
 		}
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Page',
 			'entity' => Page::class,
@@ -61,7 +61,7 @@ class PageController extends AbstractController
 			'route' => 'page',
 			'header_route' => 'page',
 			'formModal' => $newPageForm->createView(),
-			'bundle' => 'CoreBundle',
+			'bundle' => 'CmsBundle',
 			'fields' => [
 				'ID' => 'Id',
 				'Titre' => 'Title',
@@ -127,7 +127,7 @@ class PageController extends AbstractController
             throw $this->createNotFoundException("Formulaire invalide.");
         }
 
-        return $this->render('@AkyosCore/crud/edit.html.twig', [
+        return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $page,
 			'title' => '"' . $page->getTitle() . '"',
 			'entity' => $entity,

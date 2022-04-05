@@ -37,11 +37,6 @@ class CmsOptions
 	private $backMainColor;
 	
 	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $hasPosts;
-	
-	/**
 	 * @ORM\OneToOne(targetEntity="Akyos\CmsBundle\Entity\Page", cascade={"persist", "remove"})
 	 */
 	private $homepage;
@@ -80,26 +75,6 @@ class CmsOptions
 	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
 	private $recaptchaPrivateKey;
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=true)
-	 */
-	private $hasPostDocuments;
-	
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private $emailTransport;
-	
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private $smsTransport;
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=true)
-	 */
-	private $orderPostsByPosition;
 	
 	public function getId(): ?int
 	{
@@ -150,18 +125,6 @@ class CmsOptions
 	public function setBackMainColor(?string $backMainColor): self
 	{
 		$this->backMainColor = $backMainColor;
-		
-		return $this;
-	}
-	
-	public function getHasPosts(): ?bool
-	{
-		return $this->hasPosts;
-	}
-	
-	public function setHasPosts(bool $hasPosts): self
-	{
-		$this->hasPosts = $hasPosts;
 		
 		return $this;
 	}
@@ -256,23 +219,11 @@ class CmsOptions
 	}
 	
 	public function setRecaptchaPrivateKey(string $recaptchaPrivateKey): self
-	{
-		$this->recaptchaPrivateKey = $recaptchaPrivateKey;
-		
-		return $this;
-	}
-	
-	public function getHasPostDocuments(): ?bool
-	{
-		return $this->hasPostDocuments;
-	}
-	
-	public function setHasPostDocuments(?bool $hasPostDocuments): self
-	{
-		$this->hasPostDocuments = $hasPostDocuments;
-		
-		return $this;
-	}
+    {
+        $this->recaptchaPrivateKey = $recaptchaPrivateKey;
+
+        return $this;
+    }
 	
 	public function getEmailTransport(): ?string
 	{
@@ -294,18 +245,6 @@ class CmsOptions
 	public function setSmsTransport(?string $smsTransport): self
 	{
 		$this->smsTransport = $smsTransport;
-		
-		return $this;
-	}
-	
-	public function getOrderPostsByPosition(): ?bool
-	{
-		return $this->orderPostsByPosition;
-	}
-	
-	public function setOrderPostsByPosition(?bool $orderPostsByPosition): self
-	{
-		$this->orderPostsByPosition = $orderPostsByPosition;
 		
 		return $this;
 	}

@@ -1,14 +1,14 @@
 security:
     encoders:
-        Akyos\CoreBundle\Entity\User:
+        Akyos\CmsBundle\Entity\User:
             algorithm: native
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        core_user_provider:
+        cmd_user_provider:
             entity:
-                class: Akyos\CoreBundle\Entity\User
+                class: Akyos\CmdBundle\Entity\User
                 property: email
 
         users_in_memory: { memory: null }
@@ -18,14 +18,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        core:
+        cms:
             pattern: ^/(app|admin)
-            provider: core_user_provider
+            provider: cms_user_provider
             anonymous: lazy
             access_denied_url: '/app/login'
             guard:
                 authenticators:
-                    - Akyos\CoreBundle\Security\CoreBundleAuthenticator
+                    - Akyos\NBundle\Security\CmsBundleAuthenticator
             logout:
                 path: app_logout
                 target: 'home'

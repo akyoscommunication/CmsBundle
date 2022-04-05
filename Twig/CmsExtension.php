@@ -2,93 +2,42 @@
 
 namespace Akyos\CmsBundle\Twig;
 
-use Akyos\CoreBundle\Controller\Back\CoreBundleController;
+use Akyos\CmsBundle\Controller\Back\CmsBundleController;
 use Akyos\CmsBundle\Entity\Option;
 use Akyos\CmsBundle\Entity\OptionCategory;
-use Akyos\BlogBundle\Entity\Post;
-use Akyos\CoreBundle\Repository\CoreOptionsRepository;
-use Akyos\CoreBundle\Services\CoreMailer;
-use Akyos\CmsBundle\Services\CmsService;
+use Akyos\CmsBundle\Repository\CmsOptionsRepository;
+use Akyos\CmsBundle\Service\CmsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use JsonException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class CmsExtension extends AbstractExtension
 {
-	private CoreBundleController $corebundleController;
+	private CmsBundleController $cmsBundleController;
 	private EntityManagerInterface $em;
 	private UrlGeneratorInterface $router;
-	private CoreOptionsRepository $coreOptionsRepository;
+	private CmsOptionsRepository $cmsOptionsRepository;
 	private CmsService $cmsService;
-	private ContainerInterface $container;
-	private CoreMailer $mailer;
 	
 	
 	public function __construct(
-		CoreBundleController $coreBundleController,
+        CmsBundleController $cmsBundleController,
 		EntityManagerInterface $entityManager,
 		UrlGeneratorInterface $router,
-		CoreOptionsRepository $coreOptionsRepository,
-		CmsService $cmsService,
-		ContainerInterface $container,
-		CoreMailer $mailer
+        CmsOptionsRepository $cmsOptionsRepository,
+		CmsService $cmsService
 	)
 	{
-		$this->corebundleController = $coreBundleController;
+		$this->cmsBundleController = $cmsBundleController;
 		$this->em = $entityManager;
 		$this->router = $router;
-		$this->coreOptionsRepository = $coreOptionsRepository;
+		$this->cmsOptionsRepository = $cmsOptionsRepository;
 		$this->cmsService = $cmsService;
-		$this->container = $container;
-		$this->mailer = $mailer;
 		
-	}
-
-    /**
-     * @return TwigFilter[]
-     */
-	public function getFilters(): array
-	{
-		return [
-			// If your filter generates SAFE HTML, you should add a third
-			// parameter: ['is_safe' => ['html']]
-			// Reference: https://twig.symfony.com/doc/2.x/advanced.html#automatic-escaping
-			new TwigFilter('dynamicVariable', [$this, 'dynamicVariable']),
-			new TwigFilter('truncate', [$this, 'truncate']),
-			new TwigFilter('lcfirst', [$this, 'lcfirst']),
-		
-		];
-	}
-
-    /**
-     * @param $value
-     * @param int $length
-     * @param string $after
-     * @return string
-     */
-    public function truncate($value, int $length, string $after)
-    {
-        if(strlen($value) > $length) {
-            return mb_substr($value, 0, $length, 'UTF-8') . $after;
-        }
-        return $value;
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-	public function lcfirst($value): string
-    {
-		return lcfirst($value);
 	}
 
     /**
@@ -101,10 +50,8 @@ class CmsExtension extends AbstractExtension
 			new TwigFunction('hasSeo', [$this, 'hasSeo']),
 			new TwigFunction('getEntitySlug', [$this, 'getEntitySlug']),
 			new TwigFunction('getEntityNameSpace', [$this, 'getEntityNameSpace']),
-			new TwigFunction('matchSameEntity', [$this, 'matchSameEntity']),
 			new TwigFunction('isArchive', [$this, 'isArchive']),
 			new TwigFunction('getMenu', [$this, 'getMenu']),
-			new TwigFunction('instanceOf', [$this, 'isInstanceOf']),
 			new TwigFunction('useClosure', [$this, 'useClosure']),
 			new TwigFunction('getOption', [$this, 'getOption']),
 			new TwigFunction('getOptions', [$this, 'getOptions']),
@@ -115,16 +62,11 @@ class CmsExtension extends AbstractExtension
 			new TwigFunction('getPermalink', [$this, 'getPermalink']),
 			new TwigFunction('getPermalinkById', [$this, 'getPermalinkById']),
 			new TwigFunction('checkChildActive', [$this, 'checkChildActive']),
-			new TwigFunction('getBundleTab', [$this, 'getBundleTab']),
-			new TwigFunction('getBundleTabContent', [$this, 'getBundleTabContent']),
-			new TwigFunction('sendExceptionMail', [$this, 'sendExceptionMail']),
-			new TwigFunction('get_class', 'get_class'),
-			new TwigFunction('class_exists', 'class_exists'),
 			new TwigFunction('getCustomField', [$this->cmsService, 'getCustomField']),
 			new TwigFunction('setCustomField', [$this->cmsService, 'setCustomField']),
 			new TwigFunction('searchByCustomField', [$this->cmsService, 'searchByCustomField']),
-			new TwigFunction('hasCategory', [$this, 'hasCategory']),
-			new TwigFunction('countElements', [$this, 'countElements']),
+            new TwigFunction('getBundleTab', [$this, 'getBundleTab']),
+            new TwigFunction('getBundleTabContent', [$this, 'getBundleTabContent']),
 		];
 	}
 
@@ -199,19 +141,6 @@ class CmsExtension extends AbstractExtension
 	}
 
     /**
-     * @param $str
-     * @param $entity
-     * @return bool
-     */
-	public function matchSameEntity($str, $entity): bool
-    {
-		if (!is_object($entity)) {
-			return false;
-		}
-		return $str === get_class($entity);
-	}
-
-    /**
      * @param $entity
      * @param $page
      * @return bool
@@ -235,25 +164,7 @@ class CmsExtension extends AbstractExtension
      */
 	public function getMenu($menuSlug, $page): string
     {
-        return $this->corebundleController->renderMenu($menuSlug, $page);
-	}
-
-    /**
-     * @param $object
-     * @param null $class
-     * @return bool|string
-     * @throws ReflectionException
-     */
-	public function isInstanceOf($object, $class = null)
-	{
-		if(!$class) {
-			return gettype($object);
-		}
-		if (!is_object($object)) {
-			return false;
-		}
-		$reflectionClass = new \ReflectionClass($class);
-		return $reflectionClass->isInstance($object);
+        return $this->cmsBundleController->renderMenu($menuSlug, $page);
 	}
 
     /**
@@ -439,8 +350,8 @@ class CmsExtension extends AbstractExtension
     {
 		$link = '';
 		if ($type === 'Page' && $id) {
-			$coreOptions = $this->coreOptionsRepository->findAll();
-			$homepage = $coreOptions[0]->getHomepage();
+			$cmsOptions = $this->cmsOptionsRepository->findAll();
+			$homepage = $cmsOptions[0]->getHomepage();
 			$isHome = false;
 			if ($homepage && $homepage->getId() === $id) {
                 $isHome = true;
@@ -477,8 +388,8 @@ class CmsExtension extends AbstractExtension
 			}
 		} elseif ($item->getType()) {
 			if (($item->getType() === 'Page') && $item->getIdType()) {
-				$coreOptions = $this->coreOptionsRepository->findAll();
-				$homepage = $coreOptions[0]->getHomepage();
+				$cmsOptions = $this->cmsOptionsRepository->findAll();
+				$homepage = $cmsOptions[0]->getHomepage();
 				$isHome = false;
 				if ($homepage && $homepage->getId() === $item->getIdType()) {
                     $isHome = true;
@@ -524,16 +435,16 @@ class CmsExtension extends AbstractExtension
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-	public function getBundleTab($objectType): string
+    public function getBundleTab($objectType): string
     {
-		$html = '';
-		$class = 'Akyos\BuilderBundle\Service\Builder';
-		if (class_exists($class) && $this->cmsService->checkIfBundleEnable('Akyos\BuilderBundle\AkyosBuilderBundle', 'Akyos\BuilderBundle\Entity\BuilderOptions', $objectType)) {
+        $html = '';
+        $class = 'Akyos\BuilderBundle\Service\Builder';
+        if (class_exists($class) && $this->cmsService->checkIfBundleEnable('Akyos\BuilderBundle\AkyosBuilderBundle', 'Akyos\BuilderBundle\Entity\BuilderOptions', $objectType)) {
             $html .= $this->container->get('render.builder')->getTab();
         }
-		
-		return $html;
-	}
+
+        return $html;
+    }
 
     /**
      * @param $objectType
@@ -542,66 +453,14 @@ class CmsExtension extends AbstractExtension
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-	public function getBundleTabContent($objectType, $objectId): string
+    public function getBundleTabContent($objectType, $objectId): string
     {
-		$html = '';
-		$class = 'Akyos\BuilderBundle\Service\Builder';
-		if (class_exists($class) && $this->cmsService->checkIfBundleEnable('Akyos\BuilderBundle\AkyosBuilderBundle', 'Akyos\BuilderBundle\Entity\BuilderOptions', $objectType)) {
+        $html = '';
+        $class = 'Akyos\BuilderBundle\Service\Builder';
+        if (class_exists($class) && $this->cmsService->checkIfBundleEnable('Akyos\BuilderBundle\AkyosBuilderBundle', 'Akyos\BuilderBundle\Entity\BuilderOptions', $objectType)) {
             $html .= $this->container->get('render.builder')->getTabContent($objectType, $objectId);
         }
-		
-		return $html;
-	}
 
-    /**
-     * @param $exceptionMessage
-     * @return bool|Exception
-     */
-	public function sendExceptionMail($exceptionMessage)
-	{
-		try {
-			$this->mailer->sendMail(
-				["thomas.sebert.akyos@gmail.com"],
-				'Nouvelle erreur sur le site ' . $_SERVER['SERVER_NAME'],
-				$exceptionMessage,
-				'Nouvelle erreur sur le site ' . $_SERVER['SERVER_NAME'],
-				null,
-				null,
-				["lilian.akyos@gmail.com", "johan@akyos.com"],
-                null,
-                null,
-                null,
-                null,
-                'SMTP'
-			);
-			return true;
-		} catch (Exception $e) {
-			return $e;
-		}
-	}
-
-    /**
-     * @param string $slug
-     * @param Post $post
-     * @return bool
-     */
-	public function hasCategory(string $slug, Post $post): bool
-	{
-		$hasCategory = false;
-		foreach ($post->getPostCategories() as $postCategory) {
-			if ($postCategory->getSlug() === $slug) {
-				$hasCategory = true;
-			}
-		}
-		return $hasCategory;
-	}
-
-    /**
-     * @param string $entity
-     * @return int
-     */
-	public function countElements(string $entity): int
-	{
-		return $this->em->getRepository($entity)->count([]);
-	}
+        return $html;
+    }
 }

@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/profile", name="profile_")
- * @isGranted("profil")
+ * @IsGranted("profil")
  */
 class ProfileController extends AbstractController
 {

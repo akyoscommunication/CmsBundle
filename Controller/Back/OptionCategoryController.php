@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/site_option/category", name="option_category_")
- * @isGranted("categorie-doptions-du-site")
+ * @IsGranted("categorie-doptions-du-site")
  */
 class OptionCategoryController extends AbstractController
 {
@@ -35,7 +35,7 @@ class OptionCategoryController extends AbstractController
 		}
 		$els = $paginator->paginate($query->getQuery(), $request->query->getInt('page', 1), 12);
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Catégorie d\'options',
 			'entity' => 'Option',
@@ -67,7 +67,7 @@ class OptionCategoryController extends AbstractController
 			return $this->redirectToRoute('option_category_index');
 		}
 
-		return $this->render('@AkyosCore/crud/new.html.twig', [
+		return $this->render('@AkyosCms/crud/new.html.twig', [
 			'el' => $optionCategory,
 			'title' => 'Catégorie d\'options',
 			'entity' => 'Option',
@@ -99,7 +99,7 @@ class OptionCategoryController extends AbstractController
 			return $this->redirectToRoute('option_category_index');
 		}
 
-		return $this->render('@AkyosCore/crud/edit.html.twig', [
+		return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $optionCategory,
 			'title' => 'Catégorie d\'options',
 			'entity' => 'Option',

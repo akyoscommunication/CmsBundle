@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/rgpd/options", name="rgpd_options")
- * @isGranted("rgpd")
+ * @IsGranted("rgpd")
  */
 class RgpdOptionsController extends AbstractController
 {

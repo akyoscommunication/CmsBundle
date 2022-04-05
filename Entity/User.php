@@ -2,6 +2,7 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CoreBundle\Entity\BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

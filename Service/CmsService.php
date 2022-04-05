@@ -1,6 +1,6 @@
 <?php
 
-namespace Akyos\CmsBundle\Services;
+namespace Akyos\CmsBundle\Service;
 
 use Akyos\CmsBundle\Entity\CmsOptions;
 use Akyos\CmsBundle\Entity\CustomFieldValue;

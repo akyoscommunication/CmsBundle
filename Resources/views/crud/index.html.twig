@@ -1,11 +1,11 @@
-{% extends '@AkyosCore/layout.html.twig' %}
+{% extends '@AkyosCms/layout.html.twig' %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block page_content %}
 
     {% set hasSearch = false %}
-    {% if (bundle is defined and (bundle == "CoreBundle" or bundle == "BuilderBundle" or bundle == "FormBundle" or bundle == "ShopBundle")) or (search is defined and search) %}
+    {% if (bundle is defined and (bundle == "CmsBundle" or bundle == "BuilderBundle" or bundle == "FormBundle" or bundle == "ShopBundle")) or (search is defined and search) %}
         {% set hasSearch = true %}
     {% endif %}
 

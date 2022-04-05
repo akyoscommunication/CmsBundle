@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("admin/menu/item", name="menu_item_")
- * @isGranted("elements-du-menu")
+ * @IsGranted("elements-du-menu")
  */
 class MenuItemController extends AbstractController
 {

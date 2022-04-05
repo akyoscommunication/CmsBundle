@@ -1,6 +1,6 @@
 <?php
 
-namespace Akyos\CmsBundle\Services;
+namespace Akyos\CmsBundle\Service;
 
 use Akyos\BuilderBundle\AkyosBuilderBundle;
 use Akyos\BuilderBundle\Entity\BuilderOptions;

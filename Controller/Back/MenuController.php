@@ -51,7 +51,7 @@ class MenuController extends AbstractController
 		}
 		$els = $paginator->paginate($query->getQuery(), $request->query->getInt('page', 1), 12);
 
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Menu',
 			'route' => 'menu',

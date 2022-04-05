@@ -47,17 +47,15 @@ class CmsInstallFixtures extends Fixture
 		$manager->persist($menu);
 		$manager->flush();
 
-		$coreOptions = new CmsOptions();
-		$coreOptions
+		$cmsOptions = new CmsOptions();
+		$cmsOptions
 			->setHomepage($homepage)
 			->setSiteTitle('Nouveau site')
 			->setBackMainColor('#000000')
-			->setHasPosts(0)
-			->setHasPostDocuments(0)
 			->setHasSeoEntities([Page::class])
 			->setAgencyLink('https://akyos.com')
 			->setAgencyName('Akyos Communication');
-		$manager->persist($coreOptions);
+		$manager->persist($cmsOptions);
 		$manager->flush();
 	}
 }

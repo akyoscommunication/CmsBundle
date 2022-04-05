@@ -9,8 +9,8 @@ use Akyos\CmsBundle\Entity\Page;
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
 use Akyos\CmsBundle\Repository\PageRepository;
 use Akyos\CmsBundle\Repository\SeoRepository;
-use Akyos\CmsBundle\Services\CmsService;
-use Akyos\CmsBundle\Services\FrontControllerService;
+use Akyos\CmsBundle\Service\CmsService;
+use Akyos\CmsBundle\Service\FrontControllerService;
 use Gedmo\Translatable\Entity\Translation;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,8 +48,8 @@ class FrontController extends AbstractController
 	{
 		// FIND HOMEPAGE
 		$entity = Page::class;
-		$coreOptions = $cmsOptionsrepository->findAll();
-		$homePage = $coreOptions ? $coreOptions[0]->getHomepage() : $pageRepository->findOneBy([], ['position' => "ASC"]);
+		$cmsOptions = $cmsOptionsrepository->findAll();
+		$homePage = $cmsOptions ? $cmsOptions[0]->getHomepage() : $pageRepository->findOneBy([], ['position' => "ASC"]);
 
 		if (!$homePage) {
 			throw $this->createNotFoundException("Cette page n'existe pas! ( Accueil )");

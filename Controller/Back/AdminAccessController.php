@@ -48,7 +48,7 @@ class AdminAccessController extends AbstractController
 			$request->query->getInt('page', 1),
 			16
 		);
-		return $this->render('@AkyosCore/crud/index.html.twig', [
+		return $this->render('@AkyosCms/crud/index.html.twig', [
 			'els' => $els,
 			'title' => 'Accès admin',
 			'entity' => AdminAccess::class,
@@ -79,7 +79,7 @@ class AdminAccessController extends AbstractController
 			$entityManager->flush();
 			return $this->redirectToRoute('admin_access_index');
 		}
-		return $this->render('@AkyosCore/crud/new.html.twig', [
+		return $this->render('@AkyosCms/crud/new.html.twig', [
 			'form' => $form->createView(),
 			'el' => $adminAccess,
 			'title' => 'Accès admin',
@@ -106,7 +106,7 @@ class AdminAccessController extends AbstractController
 				'id' => $adminAccess->getId()
 			]);
 		}
-		return $this->render('@AkyosCore/crud/edit.html.twig', [
+		return $this->render('@AkyosCms/crud/edit.html.twig', [
 			'el' => $adminAccess,
 			'title' => 'Accès admin ' . $adminAccess->getName(),
 			'entity' => 'AdminAccess',

@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/site_option", name="option_")
- * @isGranted("options-du-site")
+ * @IsGranted("options-du-site")
  */
 class OptionController extends AbstractController
 {
