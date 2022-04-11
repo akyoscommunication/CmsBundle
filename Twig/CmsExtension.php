@@ -25,7 +25,6 @@ class CmsExtension extends AbstractExtension
 	private CmsService $cmsService;
     private ContainerInterface $container;
 
-
     public function __construct(
         CmsBundleController $cmsBundleController,
 		EntityManagerInterface $entityManager,
