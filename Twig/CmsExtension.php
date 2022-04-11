@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -22,14 +23,16 @@ class CmsExtension extends AbstractExtension
 	private UrlGeneratorInterface $router;
 	private CmsOptionsRepository $cmsOptionsRepository;
 	private CmsService $cmsService;
-	
-	
-	public function __construct(
+    private ContainerInterface $container;
+
+
+    public function __construct(
         CmsBundleController $cmsBundleController,
 		EntityManagerInterface $entityManager,
 		UrlGeneratorInterface $router,
         CmsOptionsRepository $cmsOptionsRepository,
-		CmsService $cmsService
+		CmsService $cmsService,
+        ContainerInterface $container
 	)
 	{
 		$this->cmsBundleController = $cmsBundleController;
@@ -37,7 +40,8 @@ class CmsExtension extends AbstractExtension
 		$this->router = $router;
 		$this->cmsOptionsRepository = $cmsOptionsRepository;
 		$this->cmsService = $cmsService;
-	}
+        $this->container = $container;
+    }
 
     /**
      * @return TwigFunction[]
