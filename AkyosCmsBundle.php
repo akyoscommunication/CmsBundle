@@ -3,13 +3,14 @@
 namespace Akyos\CmsBundle;
 
 use Akyos\CmsBundle\DependencyInjection\CmsBundleExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AkyosCmsBundle extends Bundle
 {
-	public function getContainerExtension()
+	public function getContainerExtension(): ?ExtensionInterface
 	{
-		if (null === $this->extension) {
+        if (null === $this->extension) {
 			$this->extension = new CmsBundleExtension();
 		}
 		return $this->extension;

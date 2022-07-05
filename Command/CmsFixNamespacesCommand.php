@@ -16,9 +16,8 @@ class CmsFixNamespacesCommand extends Command
 	private EntityManagerInterface $em;
 	private CmsExtension $cmsExtension;
 	
-	public function __construct(string $name = null, EntityManagerInterface $em, CmsExtension $cmsExtension)
+	public function __construct(EntityManagerInterface $em, CmsExtension $cmsExtension)
 	{
-		parent::__construct($name);
 		$this->em = $em;
 		$this->cmsExtension = $cmsExtension;
 	}

@@ -35,14 +35,17 @@ class AdminAccessController extends AbstractController
     {
 		$finder = new Finder();
 		$finder->depth('== 0');
-		foreach ($finder->directories()->in($this->getParameter('kernel.project_dir') . '/lib') as $bundleDirectory) {
-			if (class_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess') &&
-				method_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess', 'setDefaults')
-			) {
-				$this->forward('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess::setDefaults', []);
-			}
-		}
-		$query = $accessRepository->searchByName($request->query->get('search'));
+        if (file_exists($this->getParameter('kernel.project_dir') . '/lib')) {
+            foreach ($finder->directories()->in($this->getParameter('kernel.project_dir') . '/lib') as $bundleDirectory) {
+                if (class_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess') &&
+                    method_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess', 'setDefaults')
+                ) {
+                    $this->forward('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess::setDefaults', []);
+                }
+            }
+        }
+
+        $query = $accessRepository->searchByName($request->query->get('search'));
 		$els = $paginator->paginate(
 			$query,
 			$request->query->getInt('page', 1),

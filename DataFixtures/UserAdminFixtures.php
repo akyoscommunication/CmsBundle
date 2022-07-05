@@ -25,7 +25,7 @@ class UserAdminFixtures extends Fixture
 				$user,
 				'root'
 			))
-			->setRoles(["ROLE_SUPER_ADMIN"]);
+			->setRoles(["ROLE_AKYOS"]);
 
 		$manager->persist($user);
 		$manager->flush();
