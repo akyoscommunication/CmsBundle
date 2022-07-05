@@ -26,16 +26,21 @@ class AccessVoter extends Voter
 	protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
 	{
 		$role = $this->adminAccessRepository->findOneBy(['slug' => $attribute]);
+        $r = true;
+        
 		if ($role) {
 			$authorizedRoles = $role->getRoles();
 			if (!empty($authorizedRoles)) {
-				if ($this->security->isGranted($authorizedRoles)) {
-					return true;
-				}
-				return false;
+                $r = false;
+                foreach ($authorizedRoles as $authorizedRole) {
+                    if ($this->security->isGranted($authorizedRole)) {
+                        $r = true;
+                        break;
+                    }
+                }
 			}
-			return true;
 		}
-		return true;
+        
+		return $r;
 	}
 }
