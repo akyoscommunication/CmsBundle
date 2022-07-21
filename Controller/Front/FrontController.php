@@ -93,6 +93,7 @@ class FrontController extends AbstractController
      *     requirements={
      *          "slug"="^(?!admin\/|_profiler\/|_wdt\/|app\/|recaptcha\/|page_preview\/|archive\/|details\/|details_preview\/|categorie\/|tag\/|file-manager\/|secured_files\/|en\/).+"
      *     },
+     *     priority="-1",
      *     name="page")
      * @param string $slug
      * @param FrontControllerService $frontControllerService
