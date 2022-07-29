@@ -5,6 +5,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 use Akyos\CmsBundle\Entity\RgpdOptions;
 use Akyos\CmsBundle\Form\RgpdOptionsType;
 use Akyos\CmsBundle\Repository\RgpdOptionsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,10 +22,10 @@ class RgpdOptionsController extends AbstractController
 	 * @Route("/", name="", methods={"GET", "POST"})
 	 * @param RgpdOptionsRepository $rgpdOptionsRepository
 	 * @param Request $request
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function index(RgpdOptionsRepository $rgpdOptionsRepository, Request $request): Response
+	public function index(RgpdOptionsRepository $rgpdOptionsRepository, Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$rgpdOption = $rgpdOptionsRepository->findAll();
 		if (!$rgpdOption) {
@@ -37,7 +38,6 @@ class RgpdOptionsController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($rgpdOption);
 			$entityManager->flush();
 

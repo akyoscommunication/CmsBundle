@@ -6,6 +6,7 @@ use Akyos\CmsBundle\Entity\User;
 use Akyos\CmsBundle\Form\UserType;
 use Akyos\CmsBundle\Form\UserEditType;
 use Akyos\CmsBundle\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -64,14 +65,15 @@ class UserController extends AbstractController
 			],
 		]);
 	}
-
-    /**
-     * @Route("/new", name="new", methods={"GET","POST"})
-     * @param Request $request
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @return Response
-     */
-	public function new(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+	
+	/**
+	 * @Route("/new", name="new", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param UserPasswordHasherInterface $passwordHasher
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+	public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
 	{
 		$user = new User();
 		$form = $this->createForm(UserType::class, $user);
@@ -85,7 +87,6 @@ class UserController extends AbstractController
 				)
 			);
 
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($user);
 			$entityManager->flush();
 
@@ -100,20 +101,21 @@ class UserController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
 	 * @param Request $request
 	 * @param User $user
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function edit(Request $request, User $user): Response
+	public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
 	{
 		$form = $this->createForm(UserEditType::class, $user);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('user_index');
 		}
@@ -126,17 +128,17 @@ class UserController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param User $user
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, User $user): Response
+	public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->remove($user);
 			$entityManager->flush();
 		}

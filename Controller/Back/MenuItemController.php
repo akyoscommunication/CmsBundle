@@ -6,6 +6,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 use Akyos\CmsBundle\Entity\MenuItem;
 use Akyos\CmsBundle\Form\MenuItemType;
 use Akyos\CmsBundle\Repository\MenuRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,17 +25,17 @@ class MenuItemController extends AbstractController
 	 * @param MenuItem $menuItem
 	 * @param $menu
 	 * @param MenuRepository $menuRepository
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function edit(Request $request, MenuItem $menuItem, $menu, MenuRepository $menuRepository): Response
+	public function edit(Request $request, MenuItem $menuItem, $menu, MenuRepository $menuRepository, EntityManagerInterface $entityManager): Response
 	{
 		$menu = $menuRepository->find($menu);
 		$form = $this->createForm(MenuItemType::class, $menuItem, ['menu' => $menu]);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return new Response('valid');
 		}
@@ -44,18 +45,17 @@ class MenuItemController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param MenuItem $menuItem
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, MenuItem $menuItem): Response
+	public function delete(Request $request, MenuItem $menuItem, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $menuItem->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->remove($menuItem);
 			$entityManager->flush();
 		}

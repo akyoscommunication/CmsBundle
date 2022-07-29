@@ -31,15 +31,14 @@ class CustomFieldsGroupController extends AbstractController
 	 * @param CustomFieldsGroupRepository $customFieldsGroupRepository
 	 * @param PaginatorInterface $paginator
 	 * @param Request $request
-	 *
 	 * @param CrudHandler $crudHandler
-	 * @param EntityManagerInterface $em
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function index(CustomFieldsGroupRepository $customFieldsGroupRepository, PaginatorInterface $paginator, Request $request, CrudHandler $crudHandler, EntityManagerInterface $em): Response
+	public function index(CustomFieldsGroupRepository $customFieldsGroupRepository, PaginatorInterface $paginator, Request $request, CrudHandler $crudHandler, EntityManagerInterface $entityManager): Response
 	{
 		$entities = [];
-		$meta = $em->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		foreach ($meta as $m) {
 			if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
 				$entities[] = $m->getName();
@@ -80,14 +79,13 @@ class CustomFieldsGroupController extends AbstractController
 	/**
 	 * @Route("/new", name="new", methods={"GET","POST"})
 	 * @param Request $request
-	 *
-	 * @param EntityManagerInterface $em
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function new(Request $request, EntityManagerInterface $em): Response
+	public function new(Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$entities = [];
-		$meta = $em->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		foreach ($meta as $m) {
 			if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
 				$entities[] = $m->getName();
@@ -101,7 +99,6 @@ class CustomFieldsGroupController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($customFieldsGroup);
 			$entityManager->flush();
 
@@ -121,14 +118,14 @@ class CustomFieldsGroupController extends AbstractController
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      * @param Request $request
      * @param CustomFieldsGroup $customFieldsGroup
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
-	public function edit(Request $request, CustomFieldsGroup $customFieldsGroup, EntityManagerInterface $em): Response
+	public function edit(Request $request, CustomFieldsGroup $customFieldsGroup, EntityManagerInterface $entityManager): Response
 	{
 		$akyosEntities = [];
 		$entities = [];
-		$meta = $em->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		foreach ($meta as $m) {
 			if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
 				$akyosEntities[] = $m->getName();
@@ -145,7 +142,7 @@ class CustomFieldsGroupController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('custom_fields_group_index');
 		}
@@ -158,42 +155,41 @@ class CustomFieldsGroupController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param CustomFieldsGroup $customFieldsGroup
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, CustomFieldsGroup $customFieldsGroup): Response
+	public function delete(Request $request, CustomFieldsGroup $customFieldsGroup, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $customFieldsGroup->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->remove($customFieldsGroup);
 			$entityManager->flush();
 		}
 
 		return $this->redirectToRoute('custom_fields_group_index');
 	}
-
-    /**
-     * @Route("/change-value/{entity}/{id}/{slug}/{callback}", name="change_value", methods={"POST"})
-     * @param $id
-     * @param $slug
-     * @param $callback
-     * @param Request $request
-     * @param CustomFieldValueRepository $customFieldValueRepository
-     * @param CustomFieldRepository $customFieldRepository
-     * @return null
-     */
-	public function changeValue($id, $slug, $callback, Request $request, CustomFieldValueRepository $customFieldValueRepository, CustomFieldRepository $customFieldRepository)
+	
+	/**
+	 * @Route("/change-value/{entity}/{id}/{slug}/{callback}", name="change_value", methods={"POST"})
+	 * @param $id
+	 * @param $slug
+	 * @param $callback
+	 * @param Request $request
+	 * @param CustomFieldValueRepository $customFieldValueRepository
+	 * @param CustomFieldRepository $customFieldRepository
+	 * @param EntityManagerInterface $entityManager
+	 * @return null
+	 */
+	public function changeValue($id, $slug, $callback, Request $request, CustomFieldValueRepository $customFieldValueRepository, CustomFieldRepository $customFieldRepository, EntityManagerInterface $entityManager)
 	{
-		$em = $this->getDoctrine()->getManager();
 		$newValue = $request->get('data');
 		$customField = $customFieldRepository->findOneBy(['slug' => $slug]) ??
-			(!$em->getMetadataFactory()->isTransient(Translation::class)
-				? $em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, CustomField::class)
+			(!$entityManager->getMetadataFactory()->isTransient(Translation::class)
+				? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, CustomField::class)
 				: null);
 		$customFieldValue = $customFieldValueRepository->findOneBy(['customField' => $customField, 'objectId' => $id]);
 
@@ -203,12 +199,12 @@ class CustomFieldsGroupController extends AbstractController
 				->setCustomField($customField)
 				->setValue($newValue)
 				->setObjectId($id);
-			$em->persist($customFieldValue);
+			$entityManager->persist($customFieldValue);
 		} else {
 			$customFieldValue->setValue($newValue);
 		}
 
-		$em->flush();
+		$entityManager->flush();
 
 		return $this->redirect(urldecode($callback));
 	}

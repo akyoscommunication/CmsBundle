@@ -9,6 +9,7 @@ use Akyos\CmsBundle\Form\Type\Page\PageType;
 use Akyos\CmsBundle\Repository\PageRepository;
 use Akyos\CmsBundle\Repository\SeoRepository;
 use Akyos\CmsBundle\Service\CmsService;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,15 +70,15 @@ class PageController extends AbstractController
 			],
 		]);
 	}
-
+	
 	/**
 	 * @Route("/new", name="new", methods={"GET","POST"})
 	 * @param PageRepository $pageRepository
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function new(PageRepository $pageRepository): Response
+	public function new(PageRepository $pageRepository, EntityManagerInterface $entityManager): Response
 	{
-		$entityManager = $this->getDoctrine()->getManager();
 		$page = new Page();
 		$page->setPublished(false);
 		$page->setTitle("Nouvelle page");
@@ -87,19 +88,19 @@ class PageController extends AbstractController
 
 		return $this->redirectToRoute('page_edit', ['id' => $page->getId()]);
 	}
-
-    /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
-     * @param Request $request
-     * @param Page $page
-     * @param CmsService $cmsService
-     * @param ContainerInterface $container
-     * @return Response
-     */
-	public function edit(Request $request, Page $page, CmsService $cmsService, ContainerInterface $container): Response
+	
+	/**
+	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param Page $page
+	 * @param CmsService $cmsService
+	 * @param ContainerInterface $container
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+	public function edit(Request $request, Page $page, CmsService $cmsService, ContainerInterface $container, EntityManagerInterface $entityManager): Response
 	{
 		$entity = get_class($page);
-		$em = $this->getDoctrine()->getManager();
 		$form = $this->createForm(PageType::class, $page);
 		$form->handleRequest($request);
 
@@ -114,7 +115,7 @@ class PageController extends AbstractController
             if ($cmsService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {
                 $container->get('render.builder')->tempToProd($entity, $page->getId());
             }
-            $em->flush();
+            $entityManager->flush();
 
             return $this->redirect($request->getUri());
         }
@@ -136,7 +137,7 @@ class PageController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
@@ -145,14 +146,13 @@ class PageController extends AbstractController
 	 * @param SeoRepository $seoRepository
 	 * @param CmsService $cmsService
 	 * @param ContainerInterface $container
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CmsService $cmsService, ContainerInterface $container): Response
+	public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CmsService $cmsService, ContainerInterface $container, EntityManagerInterface $entityManager): Response
 	{
 		$entity = get_class($page);
 		if ($this->isCsrfTokenValid('delete' . $page->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
-
 			$classBuilder = 'Akyos\BuilderBundle\AkyosBuilderBundle';
 			$classBuilderOption = 'Akyos\BuilderBundle\Entity\BuilderOptions';
 			if ($cmsService->checkIfBundleEnable($classBuilder, $classBuilderOption, $entity)) {

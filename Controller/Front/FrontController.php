@@ -11,6 +11,7 @@ use Akyos\CmsBundle\Repository\PageRepository;
 use Akyos\CmsBundle\Repository\SeoRepository;
 use Akyos\CmsBundle\Service\CmsService;
 use Akyos\CmsBundle\Service\FrontControllerService;
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Translatable\Entity\Translation;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,28 +24,24 @@ use Twig\Environment;
 
 class FrontController extends AbstractController
 {
-	protected KernelInterface $kernel;
-	private CmsService $cmsService;
-
-	public function __construct(KernelInterface $kernel, CmsService $cmsService)
-	{
-		$this->kernel = $kernel;
-		$this->cmsService = $cmsService;
-	}
-
 	/**
 	 * @Route("/", name="home", methods={"GET","POST"})
 	 * @param CmsOptionsRepository $cmsOptionsrepository
 	 * @param PageRepository $pageRepository
 	 * @param SeoRepository $seoRepository
 	 * @param Environment $environment
+	 * @param EntityManagerInterface $entityManager
+	 * @param CmsService $cmsService
 	 * @return Response
 	 */
 	public function home(
 		CmsOptionsRepository $cmsOptionsrepository,
 		PageRepository $pageRepository,
 		SeoRepository $seoRepository,
-		Environment $environment): Response
+		Environment $environment,
+		EntityManagerInterface $entityManager,
+		CmsService $cmsService,
+	): Response
 	{
 		// FIND HOMEPAGE
 		$entity = Page::class;
@@ -57,8 +54,8 @@ class FrontController extends AbstractController
 
 		// GET COMPONENTS OR CONTENT
 		$components = null;
-		if ($this->cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entity)) {
-			$components = $this->getDoctrine()->getRepository(Component::class)->findBy(['type' => $entity, 'typeId' => $homePage->getId(), 'isTemp' => false, 'parentComponent' => null], ['position' => 'ASC']);
+		if ($cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entity)) {
+			$components = $entityManager->getRepository(Component::class)->findBy(['type' => $entity, 'typeId' => $homePage->getId(), 'isTemp' => false, 'parentComponent' => null], ['position' => 'ASC']);
 		}
 
 		// GET TEMPLATE
@@ -103,17 +100,19 @@ class FrontController extends AbstractController
 	{
 		return new Response($frontControllerService->pageAndPreview($slug, 'page'));
 	}
-
-    /**
-     * @Route("/archive/{entitySlug}", name="archive", methods={"GET","POST"})
-     * @param Filesystem $filesystem
-     * @param string $entitySlug
-     * @param CmsService $cmsService
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
-     */
-	public function archive(Filesystem $filesystem, string $entitySlug, CmsService $cmsService, Request $request, PaginatorInterface $paginator): Response
+	
+	/**
+	 * @Route("/archive/{entitySlug}", name="archive", methods={"GET","POST"})
+	 * @param Filesystem $filesystem
+	 * @param string $entitySlug
+	 * @param CmsService $cmsService
+	 * @param Request $request
+	 * @param PaginatorInterface $paginator
+	 * @param EntityManagerInterface $entityManager
+	 * @param KernelInterface $kernel
+	 * @return Response
+	 */
+	public function archive(Filesystem $filesystem, string $entitySlug, CmsService $cmsService, Request $request, PaginatorInterface $paginator, EntityManagerInterface $entityManager, KernelInterface $kernel): Response
 	{
 		// GET ENTITY NAME AND FULLNAME FROM SLUG
 		[$entityFullName, $entity] = $cmsService->getEntityAndFullString($entitySlug);
@@ -121,15 +120,15 @@ class FrontController extends AbstractController
 		if (!$entityFullName || !$entity) {
 			throw $this->createNotFoundException("Cette page n'existe pas! ( Archive )");
 		}
-        if (!$this->cmsService->checkIfArchiveEnable($entityFullName)) {
+        if (!$cmsService->checkIfArchiveEnable($entityFullName)) {
             throw $this->createNotFoundException('La page archive n\'est pas activée pour cette entité ');
         }
 
         // GET ELEMENTS
 		// Pour avoir la fonction de recherche, ajouter dans le repository de l'entité visée la méthode "search"
-		if (method_exists($this->getDoctrine()->getRepository($entityFullName), 'search')) {
+		if (method_exists($entityManager->getRepository($entityFullName), 'search')) {
 			$elements = $paginator->paginate(
-				$this->getDoctrine()->getRepository($entityFullName)->search($request->query->get('search')),
+				$entityManager->getRepository($entityFullName)->search($request->query->get('search')),
 				$request->query->getInt('page', 1),
 				10
 			);
@@ -145,7 +144,7 @@ class FrontController extends AbstractController
 			}
 
 			$elements = $paginator->paginate(
-				$this->getDoctrine()->getRepository($entityFullName)->findBy($param, $order),
+				$entityManager->getRepository($entityFullName)->findBy($param, $order),
 				$request->query->getInt('page', 1),
 				10
 			);
@@ -156,7 +155,7 @@ class FrontController extends AbstractController
 		}
 
 		// GET TEMPLATE
-		$view = $filesystem->exists($this->kernel->getProjectDir() . '/templates/' . $entity . '/archive.html.twig')
+		$view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/archive.html.twig')
 			? "/${entity}/archive.html.twig"
 			: '@AkyosCms/front/archive.html.twig';
 
@@ -191,21 +190,23 @@ class FrontController extends AbstractController
 	{
 		return new Response($frontControllerService->singleAndPreview($entitySlug, $slug, 'single'));
 	}
-
-    /**
-     * @Route("/categorie/{entitySlug}/{category}", name="taxonomy", methods={"GET","POST"})
-     * @param Filesystem $filesystem
-     * @param string $entitySlug
-     * @param string $category
-     * @param CmsService $cmsService
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
-     */
-	public function category(Filesystem $filesystem, string $entitySlug, string $category, CmsService $cmsService, Request $request, PaginatorInterface $paginator): Response
+	
+	/**
+	 * @Route("/categorie/{entitySlug}/{category}", name="taxonomy", methods={"GET","POST"})
+	 * @param Filesystem $filesystem
+	 * @param string $entitySlug
+	 * @param string $category
+	 * @param CmsService $cmsService
+	 * @param Request $request
+	 * @param PaginatorInterface $paginator
+	 * @param EntityManagerInterface $entityManager
+	 * @param KernelInterface $kernel
+	 * @return Response
+	 */
+	public function category(Filesystem $filesystem, string $entitySlug, string $category, CmsService $cmsService, Request $request, PaginatorInterface $paginator, EntityManagerInterface $entityManager, KernelInterface $kernel): Response
 	{
 		// GET ENTITY NAME AND FULLNAME FROM SLUG
-		$meta = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		[$entityFullName, $entity] = $cmsService->getEntityAndFullString($entitySlug);
 
 		if (!$entityFullName || !$entity) {
@@ -225,9 +226,9 @@ class FrontController extends AbstractController
 		}
 
 		// FIND ELEMENTS FROM CATEGORY OBJECT
-		$categoryObject = $this->getDoctrine()->getRepository($categoryFullName)->findOneBy(['slug' => $category]) ??
-			(!$this->getDoctrine()->getManager()->getMetadataFactory()->isTransient(Translation::class)
-				? $this->getDoctrine()->getRepository(Translation::class)->findObjectByTranslatedField('slug', $category, $categoryFullName)
+		$categoryObject = $entityManager->getRepository($categoryFullName)->findOneBy(['slug' => $category]) ??
+			(!$entityManager->getMetadataFactory()->isTransient(Translation::class)
+				? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $category, $categoryFullName)
 				: null);
 		if (!$categoryObject) {
 			throw $this->createNotFoundException("Cette page n'existe pas! ( Catégorie )");
@@ -235,14 +236,14 @@ class FrontController extends AbstractController
 
 		// GET ELEMENTS
 		// Pour avoir la fonction de recherche, ajouter dans le repository de l'entité visée la méthode "searchByCategory"
-		if (method_exists($this->getDoctrine()->getRepository($entityFullName), 'searchByCategory')) {
+		if (method_exists($entityManager->getRepository($entityFullName), 'searchByCategory')) {
 			$elements = $paginator->paginate(
-				$this->getDoctrine()->getRepository($entityFullName)->searchByCategory($categoryObject, $request->query->get('search')),
+				$entityManager->getRepository($entityFullName)->searchByCategory($categoryObject, $request->query->get('search')),
 				$request->query->getInt('page', 1),
 				10
 			);
 		} else {
-			$qb = $this->getDoctrine()->getRepository($entityFullName)->createQueryBuilder('a');
+			$qb = $entityManager->getRepository($entityFullName)->createQueryBuilder('a');
 			$params = [];
 
 			if (property_exists($entityFullName, 'postCategories')) {
@@ -266,7 +267,7 @@ class FrontController extends AbstractController
 		}
 
 		// GET TEMPLATE
-		$view = $filesystem->exists($this->kernel->getProjectDir() . '/templates/' . $entity . '/category.html.twig')
+		$view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/category.html.twig')
 			? "${entity}/category.html.twig"
 			: '@AkyosCms/front/category.html.twig';
 
@@ -278,19 +279,21 @@ class FrontController extends AbstractController
 			'category' => $categoryObject
 		]);
 	}
-
-    /**
-     * @Route("/tag/{entitySlug}/{tag}", name="tag", methods={"GET","POST"})
-     * @param Filesystem $filesystem
-     * @param string $entitySlug
-     * @param string $tag
-     * @param CmsService $cmsService
-     * @return Response
-     */
-	public function tag(Filesystem $filesystem, string$entitySlug, string $tag, CmsService $cmsService): Response
+	
+	/**
+	 * @Route("/tag/{entitySlug}/{tag}", name="tag", methods={"GET","POST"})
+	 * @param Filesystem $filesystem
+	 * @param string $entitySlug
+	 * @param string $tag
+	 * @param CmsService $cmsService
+	 * @param EntityManagerInterface $entityManager
+	 * @param KernelInterface $kernel
+	 * @return Response
+	 */
+	public function tag(Filesystem $filesystem, string $entitySlug, string $tag, CmsService $cmsService, EntityManagerInterface $entityManager, KernelInterface $kernel): Response
 	{
 		// GET ENTITY NAME AND FULLNAME FROM SLUG
-		$meta = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		[$entityFullName, $entity] = $cmsService->getEntityAndFullString($entitySlug);
 
 		if (!$entityFullName || !$entity) {
@@ -312,14 +315,14 @@ class FrontController extends AbstractController
 		}
 
 		// FIND ELEMENTS FROM TAG OBJECT
-		$tagObject = $this->getDoctrine()->getRepository($tagFullName)->findOneBy(['slug' => $tag]) ??
-			(!$this->getDoctrine()->getManager()->getMetadataFactory()->isTransient(Translation::class)
-				? $this->getDoctrine()->getRepository(Translation::class)->findObjectByTranslatedField('slug', $tag, $tagFullName)
+		$tagObject = $entityManager->getRepository($tagFullName)->findOneBy(['slug' => $tag]) ??
+			(!$entityManager->getMetadataFactory()->isTransient(Translation::class)
+				? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $tag, $tagFullName)
 				: null);
 		if (!$tagObject) {
 			throw $this->createNotFoundException("Cette page n'existe pas! ( Étiquette )");
 		}
-		if (substr($entity, -1) === "y") {
+		if (str_ends_with($entity, "y")) {
 			$getter = 'get' . ucfirst(substr($parentEntity,0,-1)) . 'ies';
 		} else {
 			$getter = 'get' . ucfirst($parentEntity) . 's';
@@ -327,7 +330,7 @@ class FrontController extends AbstractController
 		$elements = $tagObject->$getter();
 
 		// GET TEMPLATE
-		$view = $filesystem->exists($this->kernel->getProjectDir() . '/templates/' . $parentEntity . '/tag.html.twig')
+		$view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $parentEntity . '/tag.html.twig')
 			? "${parentEntity}/tag.html.twig"
 			: '@AkyosCms/front/tag.html.twig';
 

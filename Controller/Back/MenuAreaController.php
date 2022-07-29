@@ -5,6 +5,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 use Akyos\CmsBundle\Entity\MenuArea;
 use Akyos\CmsBundle\Form\MenuAreaType;
 use Akyos\CmsBundle\Repository\MenuAreaRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +24,6 @@ class MenuAreaController extends AbstractController
 	 * @param MenuAreaRepository $menuAreaRepository
 	 * @param PaginatorInterface $paginator
 	 * @param Request $request
-	 *
 	 * @return Response
 	 */
 	public function index(MenuAreaRepository $menuAreaRepository, PaginatorInterface $paginator, Request $request): Response
@@ -51,21 +51,20 @@ class MenuAreaController extends AbstractController
 			],
 		]);
 	}
-
+	
 	/**
 	 * @Route("/new", name="new", methods={"GET","POST"})
 	 * @param Request $request
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function new(Request $request): Response
+	public function new(Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$menuArea = new MenuArea();
 		$form = $this->createForm(MenuAreaType::class, $menuArea);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($menuArea);
 			$entityManager->flush();
 
@@ -80,21 +79,21 @@ class MenuAreaController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
 	 * @param Request $request
 	 * @param MenuArea $menuArea
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function edit(Request $request, MenuArea $menuArea): Response
+	public function edit(Request $request, MenuArea $menuArea, EntityManagerInterface $entityManager): Response
 	{
 		$form = $this->createForm(MenuAreaType::class, $menuArea);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('menu_area_index');
 		}
@@ -107,18 +106,17 @@ class MenuAreaController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param MenuArea $menuArea
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, MenuArea $menuArea): Response
+	public function delete(Request $request, MenuArea $menuArea, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $menuArea->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$menu = $menuArea->getMenu();
 			if ($menu) {
 				$menu->setMenuArea(null);

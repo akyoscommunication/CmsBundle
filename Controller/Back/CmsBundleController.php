@@ -3,6 +3,7 @@
 namespace Akyos\CmsBundle\Controller\Back;
 
 use Akyos\CmsBundle\Entity\MenuArea;
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Translatable\Entity\Translation;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CmsBundleController extends AbstractController
 {
+	public function __construct(
+		private readonly EntityManagerInterface $entityManager
+	) {}
+	
 	/**
 	 * @Route("/", name="index")
 	 */
@@ -25,9 +30,9 @@ class CmsBundleController extends AbstractController
 	
 	public function renderMenu($menu, $page): string
 	{
-		$menuArea = $this->getDoctrine()->getRepository(MenuArea::class)->findOneBy(['slug' => $menu]) ??
-			(!$this->getDoctrine()->getManager()->getMetadataFactory()->isTransient(Translation::class)
-				? $this->getDoctrine()->getRepository(Translation::class)->findObjectByTranslatedField('slug', $menu, MenuArea::class) : null);
+		$menuArea = $this->entityManager->getRepository(MenuArea::class)->findOneBy(['slug' => $menu]) ??
+			(!$this->entityManager->getMetadataFactory()->isTransient(Translation::class)
+				? $this->entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $menu, MenuArea::class) : null);
 		return $this->renderView('@AkyosCms/menu/render.html.twig', [
 			'menu' => $menuArea,
 			'currentPage' => $page,

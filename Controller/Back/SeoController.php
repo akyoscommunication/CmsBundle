@@ -5,6 +5,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 use Akyos\CmsBundle\Entity\Seo;
 use Akyos\CmsBundle\Form\SeoType;
 use Akyos\CmsBundle\Repository\SeoRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,16 +41,17 @@ class SeoController extends AbstractController
 			'formSeo' => $formSeo->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/submit/{type}/{typeId}", name="submit", methods={"POST"}, options={"expose"=true})
 	 * @param $type
 	 * @param $typeId
 	 * @param Request $request
 	 * @param SeoRepository $seoRepository
+	 * @param EntityManagerInterface $entityManager
 	 * @return JsonResponse
 	 */
-	public function submit($type, $typeId, Request $request, SeoRepository $seoRepository): JsonResponse
+	public function submit($type, $typeId, Request $request, SeoRepository $seoRepository, EntityManagerInterface $entityManager): JsonResponse
     {
 		$type = urldecode($type);
 		$seo = $seoRepository->findOneBy(['type' => $type, 'typeId' => $typeId]);
@@ -64,7 +66,6 @@ class SeoController extends AbstractController
 		$formSeo->handleRequest($request);
 
 		if ($formSeo->isSubmitted() && $formSeo->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($seo);
 			$entityManager->flush();
 

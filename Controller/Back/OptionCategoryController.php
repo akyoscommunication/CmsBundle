@@ -6,6 +6,7 @@ use Akyos\CmsBundle\Entity\OptionCategory;
 use Akyos\CmsBundle\Form\OptionCategoryType;
 use Akyos\CmsBundle\Repository\OptionCategoryRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,20 +48,20 @@ class OptionCategoryController extends AbstractController
 			],
 		]);
 	}
-
+	
 	/**
 	 * @Route("/new", name="new", methods={"GET","POST"})
 	 * @param Request $request
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function new(Request $request): Response
+	public function new(Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$optionCategory = new OptionCategory();
 		$form = $this->createForm(OptionCategoryType::class, $optionCategory);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($optionCategory);
 			$entityManager->flush();
 
@@ -80,21 +81,21 @@ class OptionCategoryController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
 	 * @param Request $request
 	 * @param OptionCategory $optionCategory
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function edit(Request $request, OptionCategory $optionCategory): Response
+	public function edit(Request $request, OptionCategory $optionCategory, EntityManagerInterface $entityManager): Response
 	{
 		$form = $this->createForm(OptionCategoryType::class, $optionCategory);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('option_category_index');
 		}
@@ -111,18 +112,17 @@ class OptionCategoryController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param OptionCategory $optionCategory
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, OptionCategory $optionCategory): Response
+	public function delete(Request $request, OptionCategory $optionCategory, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $optionCategory->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->remove($optionCategory);
 			$entityManager->flush();
 		}

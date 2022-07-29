@@ -8,6 +8,7 @@ use Akyos\CmsBundle\Form\OptionType;
 use Akyos\CmsBundle\Repository\OptionCategoryRepository;
 use Akyos\CmsBundle\Repository\OptionRepository;
 use Akyos\CmsBundle\Repository\PageRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,13 +28,11 @@ class OptionController extends AbstractController
 	 * @param OptionRepository $optionRepository
 	 * @param PageRepository $pageRepository
 	 * @param OptionCategoryRepository $categoryRepository
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function index(Request $request, OptionRepository $optionRepository, PageRepository $pageRepository, OptionCategoryRepository $categoryRepository): Response
+	public function index(Request $request, OptionRepository $optionRepository, PageRepository $pageRepository, OptionCategoryRepository $categoryRepository, EntityManagerInterface $entityManager): Response
 	{
-		$em = $this->getDoctrine()->getManager();
-
 		$option = new Option();
 		$newOptionForm = $this->createForm(NewOptionType::class, $option);
 
@@ -41,8 +40,8 @@ class OptionController extends AbstractController
 			$newOptionForm->handleRequest($request);
 			if ($newOptionForm->isSubmitted() && $newOptionForm->isValid()) {
 				try {
-					$em->persist($option);
-					$em->flush();
+					$entityManager->persist($option);
+					$entityManager->flush();
 					$this->addFlash('success', "Création du réglage effectuée avec succès !");
 				} catch (Exception $e) {
 					$this->addFlash('danger', "Une erreur s'est produite lors de la création du réglage, merci de réssayer.");
@@ -63,8 +62,8 @@ class OptionController extends AbstractController
 				$optionForm->handleRequest($request);
 				if ($optionForm->isSubmitted() && $optionForm->isValid()) {
 					try {
-						$em->persist($option);
-						$em->flush();
+						$entityManager->persist($option);
+						$entityManager->flush();
 						$this->addFlash('success', "Modification du réglage effectuée avec succès !");
 					} catch (Exception $e) {
 						$this->addFlash('danger', "Une erreur s'est produite lors de la modification du réglage, merci de réssayer.");
@@ -88,19 +87,17 @@ class OptionController extends AbstractController
 			),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/remove/{id}", name="delete")
 	 * @param Option $option
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Option $option): Response
+	public function delete(Option $option, EntityManagerInterface $entityManager): Response
 	{
-		$em = $this->getDoctrine()->getManager();
-
-		$em->remove($option);
-		$em->flush();
+		$entityManager->remove($option);
+		$entityManager->flush();
 
 		return $this->redirectToRoute('option_index');
 	}

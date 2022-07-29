@@ -4,6 +4,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 
 use Akyos\CmsBundle\Entity\User;
 use Akyos\CmsBundle\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,20 +29,21 @@ class ProfileController extends AbstractController
 			'user' => $this->getUser(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}/edit", name="edit")
 	 * @param Request $request
 	 * @param User $user
+	 * @param EntityManagerInterface $entityManager
 	 * @return RedirectResponse|Response
 	 */
-	public function edit(Request $request, User $user)
+	public function edit(Request $request, User $user, EntityManagerInterface $entityManager)
 	{
 		$form = $this->createForm(UserType::class, $user);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('profile_index');
 		}

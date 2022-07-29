@@ -8,6 +8,7 @@ use Akyos\CmsBundle\Form\MenuItemType;
 use Akyos\CmsBundle\Form\MenuType;
 use Akyos\CmsBundle\Repository\MenuItemRepository;
 use Akyos\CmsBundle\Repository\MenuRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,28 +22,23 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * @Route("/admin/menu")
  * @IsGranted("liste-de-menus")
  */
-// TODO => Move non routes functions in a MenuService class
+// TODO => Move non routes functions in a MenuService class and then remove construct
 class MenuController extends AbstractController
 {
-	private MenuItemRepository $menuItemRepository;
-	private MenuRepository $menuRepository;
-
-	public function __construct(MenuItemRepository $menuItemRepository, MenuRepository $menuRepository)
-	{
-		$this->menuItemRepository = $menuItemRepository;
-		$this->menuRepository = $menuRepository;
-	}
-
+	public function __construct(
+		private readonly EntityManagerInterface $entityManager,
+	) {}
+	
 	/**
 	 * @Route("/", name="menu_index", methods={"GET"})
 	 * @param PaginatorInterface $paginator
 	 * @param Request $request
-	 *
+	 * @param MenuRepository $menuRepository
 	 * @return Response
 	 */
-	public function index(PaginatorInterface $paginator, Request $request): Response
+	public function index(PaginatorInterface $paginator, Request $request, MenuRepository $menuRepository): Response
 	{
-		$query = $this->menuRepository->createQueryBuilder('a');
+		$query = $menuRepository->createQueryBuilder('a');
 		if ($request->query->get('search')) {
 			$query
 				->leftJoin('a.menuArea', 'menuArea')
@@ -63,21 +59,20 @@ class MenuController extends AbstractController
 			],
 		]);
 	}
-
+	
 	/**
 	 * @Route("/new", name="menu_new", methods={"GET","POST"})
 	 * @param Request $request
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function new(Request $request): Response
+	public function new(Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$menu = new Menu();
 		$form = $this->createForm(MenuType::class, $menu);
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($menu);
 			$entityManager->flush();
 
@@ -91,16 +86,16 @@ class MenuController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}/edit", name="menu_edit", methods={"GET","POST"})
 	 * @param Request $request
 	 * @param Menu $menu
 	 * @param MenuItemRepository $menuItemRepository
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function edit(Request $request, Menu $menu, MenuItemRepository $menuItemRepository): Response
+	public function edit(Request $request, Menu $menu, MenuItemRepository $menuItemRepository, EntityManagerInterface $entityManager): Response
 	{
 		$menuItem = new MenuItem();
 		$menuItem->setMenu($menu);
@@ -110,13 +105,12 @@ class MenuController extends AbstractController
 		$formItem->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$this->getDoctrine()->getManager()->flush();
+			$entityManager->flush();
 
 			return $this->redirectToRoute('menu_edit', ['id' => $menu->getId()]);
 		}
 
 		if ($formItem->isSubmitted() && $formItem->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			if ($formItem->get('menuItemParent')) {
 				$menuItem->setPosition($menuItemRepository->count(['menu' => $menu, 'menuItemParent' => $formItem->getData()->getMenuItemParent()]));
 			} else {
@@ -137,46 +131,45 @@ class MenuController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-
+	
 	/**
 	 * @Route("/{id}", name="menu_delete", methods={"DELETE"})
 	 * @param Request $request
 	 * @param Menu $menu
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function delete(Request $request, Menu $menu): Response
+	public function delete(Request $request, Menu $menu, EntityManagerInterface $entityManager): Response
 	{
 		if ($this->isCsrfTokenValid('delete' . $menu->getId(), $request->request->get('_token'))) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$menuArea = $menu->getMenuArea();
-			if ($menuArea) {
-				$menuArea->setMenu(null);
-			}
+			$menuArea?->setMenu(null);
 			$entityManager->remove($menu);
 			$entityManager->flush();
 		}
 
 		return $this->redirectToRoute('menu_index');
 	}
-
-    /**
-     * @Route("/{id}/item/change-position", name="menu_change_position_menu_item", methods={"POST"}, options={"expose"=true})
-     * @param Request $request
-     * @return JsonResponse
-     * @throws JsonException
-     */
-	public function changePositionMenuItem(Request $request): JsonResponse
+	
+	/**
+	 * @Route("/{id}/item/change-position", name="menu_change_position_menu_item", methods={"POST"}, options={"expose"=true})
+	 * @param Request $request
+	 * @param EntityManagerInterface $entityManager
+	 * @param MenuItemRepository $menuItemRepository
+	 * @return JsonResponse
+	 * @throws JsonException
+	 */
+	public function changePositionMenuItem(Request $request, EntityManagerInterface $entityManager, MenuItemRepository $menuItemRepository): JsonResponse
 	{
 		$newPositions = json_decode((string)$request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
 		if ($newPositions) {
 			foreach ($newPositions['resultMenuItem'] as $key => $item) {
 			    /** @var MenuItem $menuParentItem */
-				$menuParentItem = $this->menuItemRepository->findOneBy(['id' => $item['parent']]);
+				$menuParentItem = $menuItemRepository->findOneBy(['id' => $item['parent']]);
 				$menuParentItem->setPosition($key);
 				$menuParentItem->setMenuItemParent(NULL);
-				$this->getDoctrine()->getManager()->persist($menuParentItem);
+				$entityManager->persist($menuParentItem);
 				if (!empty($item['childs'])) {
 					foreach ($item['childs'] as $subKey => $subItem) {
 						$this->subItemChangePosition($subKey, $subItem, $menuParentItem);
@@ -184,7 +177,7 @@ class MenuController extends AbstractController
 				}
 			}
 		}
-		$this->getDoctrine()->getManager()->flush();
+		$entityManager->flush();
 
 		return new JsonResponse('valid');
 	}
@@ -198,10 +191,10 @@ class MenuController extends AbstractController
 	public function subItemChangePosition($key, $item, $parent): bool
     {
         /** @var MenuItem $menuChildItem */
-		$menuChildItem = $this->menuItemRepository->findOneBy(['id' => $item]);
+		$menuChildItem = $this->entityManager->getRepository(MenuItem::class)->findOneBy(['id' => $item]);
 		$menuChildItem->setPosition($key);
 		$menuChildItem->setMenuItemParent($parent);
-		$this->getDoctrine()->getManager()->persist($menuChildItem);
+		$this->entityManager->persist($menuChildItem);
 		if (!empty($item['childs'])) {
 			foreach ($item['childs'] as $subKey => $subItem) {
 				$this->subItemChangePosition($subKey, $subItem, $menuChildItem);

@@ -5,6 +5,7 @@ namespace Akyos\CmsBundle\Controller\Back;
 use Akyos\CmsBundle\Entity\CmsOptions;
 use Akyos\CmsBundle\Form\CmsOptionsType;
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,10 +21,10 @@ class CmsOptionsController extends AbstractController
 	 * @Route("/", name="", methods={"GET", "POST"})
 	 * @param CmsOptionsRepository $cmsOptionsRepository
 	 * @param Request $request
-	 *
+	 * @param EntityManagerInterface $entityManager
 	 * @return Response
 	 */
-	public function index(CmsOptionsRepository $cmsOptionsRepository, Request $request): Response
+	public function index(CmsOptionsRepository $cmsOptionsRepository, Request $request, EntityManagerInterface $entityManager): Response
 	{
 		$cmsOption = $cmsOptionsRepository->findAll();
 		if (!$cmsOption) {
@@ -33,8 +34,7 @@ class CmsOptionsController extends AbstractController
 		}
 
 		$entities = [];
-		$em = $this->getDoctrine()->getManager();
-		$meta = $em->getMetadataFactory()->getAllMetadata();
+		$meta = $entityManager->getMetadataFactory()->getAllMetadata();
 		foreach ($meta as $m) {
 			$entities[] = $m->getName();
 		}
@@ -45,7 +45,6 @@ class CmsOptionsController extends AbstractController
 		$form->handleRequest($request);
 
 		if ($form->isSubmitted() && $form->isValid()) {
-			$entityManager = $this->getDoctrine()->getManager();
 			$entityManager->persist($cmsOption);
 			$entityManager->flush();
 
