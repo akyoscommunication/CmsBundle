@@ -10,9 +10,7 @@ use Akyos\CmsBundle\Repository\PageRepository;
 use Akyos\CmsBundle\Repository\SeoRepository;
 use Akyos\CmsBundle\Service\CmsService;
 use Knp\Component\Pager\PaginatorInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -97,8 +95,6 @@ class PageController extends AbstractController
      * @param CmsService $cmsService
      * @param ContainerInterface $container
      * @return Response
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
 	public function edit(Request $request, Page $page, CmsService $cmsService, ContainerInterface $container): Response
 	{

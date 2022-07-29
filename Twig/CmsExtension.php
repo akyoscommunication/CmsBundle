@@ -9,8 +9,6 @@ use Akyos\CmsBundle\Repository\CmsOptionsRepository;
 use Akyos\CmsBundle\Service\CmsService;
 use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
@@ -434,8 +432,6 @@ class CmsExtension extends AbstractExtension
     /**
      * @param $objectType
      * @return string
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function getBundleTab($objectType): string
     {
@@ -452,8 +448,6 @@ class CmsExtension extends AbstractExtension
      * @param $objectType
      * @param $objectId
      * @return string
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function getBundleTabContent($objectType, $objectId): string
     {
