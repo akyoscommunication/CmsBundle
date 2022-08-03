@@ -11,22 +11,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NewPageType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder
-			->add('title', TextType::class, [
-				'label' => 'Titre de la page',
-			])
-			->add('publishedAt', DateType::class, [
-				'widget' => 'single_text',
-				'label' => 'Date de publication'
-			]);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', TextType::class, ['label' => 'Titre de la page',])->add('publishedAt', DateType::class, ['widget' => 'single_text', 'label' => 'Date de publication']);
+    }
 
-	public function configureOptions(OptionsResolver $resolver)
-	{
-		$resolver->setDefaults([
-			'data_class' => Page::class,
-		]);
-	}
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(['data_class' => Page::class,]);
+    }
 }

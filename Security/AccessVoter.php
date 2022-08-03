@@ -9,28 +9,29 @@ use Symfony\Component\Security\Core\Security;
 
 class AccessVoter extends Voter
 {
-	private Security $security;
-	private AdminAccessRepository $adminAccessRepository;
+    private Security $security;
 
-	public function __construct(Security $security, AdminAccessRepository $adminAccessRepository)
-	{
-		$this->security = $security;
-		$this->adminAccessRepository = $adminAccessRepository;
-	}
+    private AdminAccessRepository $adminAccessRepository;
 
-	protected function supports($attribute, $subject): bool
-	{
+    public function __construct(Security $security, AdminAccessRepository $adminAccessRepository)
+    {
+        $this->security = $security;
+        $this->adminAccessRepository = $adminAccessRepository;
+    }
+
+    protected function supports($attribute, $subject): bool
+    {
         return $this->adminAccessRepository->findOneBy(['slug' => $attribute]) && $this->security->getUser();
     }
 
-	protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
-	{
-		$role = $this->adminAccessRepository->findOneBy(['slug' => $attribute]);
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    {
+        $role = $this->adminAccessRepository->findOneBy(['slug' => $attribute]);
         $r = true;
-        
-		if ($role) {
-			$authorizedRoles = $role->getRoles();
-			if (!empty($authorizedRoles)) {
+
+        if ($role) {
+            $authorizedRoles = $role->getRoles();
+            if (!empty($authorizedRoles)) {
                 $r = false;
                 foreach ($authorizedRoles as $authorizedRole) {
                     if ($this->security->isGranted($authorizedRole)) {
@@ -38,9 +39,9 @@ class AccessVoter extends Voter
                         break;
                     }
                 }
-			}
-		}
-        
-		return $r;
-	}
+            }
+        }
+
+        return $r;
+    }
 }

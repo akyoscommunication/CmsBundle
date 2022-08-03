@@ -14,37 +14,37 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CmsOptionsRepository extends ServiceEntityRepository
 {
-	public function __construct(ManagerRegistry $registry)
-	{
-		parent::__construct($registry, CmsOptions::class);
-	}
-	
-	// /**
-	//  * @return CmsOptions[] Returns an array of CmsOptions objects
-	//  */
-	/*
-	public function findByExampleField($value)
-	{
-		return $this->createQueryBuilder('c')
-			->andWhere('c.exampleField = :val')
-			->setParameter('val', $value)
-			->orderBy('c.id', 'ASC')
-			->setMaxResults(10)
-			->getQuery()
-			->getResult()
-		;
-	}
-	*/
-	
-	/*
-	public function findOneBySomeField($value): ?CmsOptions
-	{
-		return $this->createQueryBuilder('c')
-			->andWhere('c.exampleField = :val')
-			->setParameter('val', $value)
-			->getQuery()
-			->getOneOrNullResult()
-		;
-	}
-	*/
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, CmsOptions::class);
+    }
+
+    // /**
+    //  * @return CmsOptions[] Returns an array of CmsOptions objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?CmsOptions
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }

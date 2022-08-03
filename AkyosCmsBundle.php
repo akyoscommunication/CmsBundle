@@ -8,11 +8,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AkyosCmsBundle extends Bundle
 {
-	public function getContainerExtension(): ?ExtensionInterface
-	{
+    public function getContainerExtension(): ?ExtensionInterface
+    {
         if (null === $this->extension) {
-			$this->extension = new CmsBundleExtension();
-		}
-		return $this->extension;
-	}
+            $this->extension = new CmsBundleExtension();
+        }
+        return $this->extension;
+    }
 }

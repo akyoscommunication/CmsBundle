@@ -24,32 +24,30 @@ use Twig\Error\SyntaxError;
 
 class FrontControllerService
 {
-	private EntityManagerInterface $em;
-	private RouterInterface $router;
-	private Filesystem $filesystem;
-	private KernelInterface $kernel;
-	private Environment $environment;
-	private CmsService $cmsService;
-	private AuthorizationCheckerInterface $checker;
-	
-	public function __construct(
-		EntityManagerInterface $em,
-		RouterInterface $router,
-		Filesystem $filesystem,
-		KernelInterface $kernel,
-		Environment $environment,
-		CmsService $cmsService,
-		AuthorizationCheckerInterface $checker
-	)
-	{
-		$this->em = $em;
-		$this->router = $router;
-		$this->filesystem = $filesystem;
-		$this->kernel = $kernel;
-		$this->environment = $environment;
-		$this->cmsService = $cmsService;
-		$this->checker = $checker;
-	}
+    private EntityManagerInterface $em;
+
+    private RouterInterface $router;
+
+    private Filesystem $filesystem;
+
+    private KernelInterface $kernel;
+
+    private Environment $environment;
+
+    private CmsService $cmsService;
+
+    private AuthorizationCheckerInterface $checker;
+
+    public function __construct(EntityManagerInterface $em, RouterInterface $router, Filesystem $filesystem, KernelInterface $kernel, Environment $environment, CmsService $cmsService, AuthorizationCheckerInterface $checker)
+    {
+        $this->em = $em;
+        $this->router = $router;
+        $this->filesystem = $filesystem;
+        $this->kernel = $kernel;
+        $this->environment = $environment;
+        $this->cmsService = $cmsService;
+        $this->checker = $checker;
+    }
 
     /**
      * @param string $entitySlug
@@ -60,29 +58,26 @@ class FrontControllerService
      * @throws RuntimeError
      * @throws SyntaxError
      */
-	public function singleAndPreview(string $entitySlug, string $slug, string $route)
-	{
-		// GET ENTITY NAME AND FULLNAME FROM SLUG
-		[$entityFullName, $entity] = $this->cmsService->getEntityAndFullString($entitySlug);
-		
-		if (!$entityFullName || !$entity || !$this->cmsService->checkIfSingleEnable($entityFullName)) {
-			throw new NotFoundHttpException("Cette page n'existe pas! ( Détail )");
-		}
-		
-		$slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
-		
-		// GET ELEMENT
-		$element = $this->em->getRepository($entityFullName)->findOneBy(['slug' => $slug]) ??
-			(!$this->em->getMetadataFactory()->isTransient(Translation::class)
-				? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entityFullName)
-				: null);
-		$now = new DateTime();
+    public function singleAndPreview(string $entitySlug, string $slug, string $route)
+    {
+        // GET ENTITY NAME AND FULLNAME FROM SLUG
+        [$entityFullName, $entity] = $this->cmsService->getEntityAndFullString($entitySlug);
+
+        if (!$entityFullName || !$entity || !$this->cmsService->checkIfSingleEnable($entityFullName)) {
+            throw new NotFoundHttpException("Cette page n'existe pas! ( Détail )");
+        }
+
+        $slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
+
+        // GET ELEMENT
+        $element = $this->em->getRepository($entityFullName)->findOneBy(['slug' => $slug]) ?? (!$this->em->getMetadataFactory()->isTransient(Translation::class) ? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entityFullName) : null);
+        $now = new DateTime();
 
         if (!$element) {
             $redirect301 = $this->em->getRepository(Redirect301::class)->findOneBy(['oldSlug' => $slug, 'objectType' => $entityFullName]);
             if ($redirect301) {
                 $element = $this->em->getRepository($entityFullName)->find($redirect301->getObjectId());
-                if($element) {
+                if ($element) {
                     $redirectUrl = $this->router->generate($route, ['entitySlug' => $entitySlug, 'slug' => $element->getSlug()]);
                     return new RedirectResponse($redirectUrl, 301);
                 }
@@ -107,26 +102,18 @@ class FrontControllerService
         }
 
         // GET COMPONENTS OR CONTENT
-		$components = null;
-		if ($this->cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entityFullName)) {
-			$components = $this->em->getRepository(Component::class)->findBy(['type' => $entityFullName, 'typeId' => $element->getId(), 'isTemp' => ($route === 'single_preview'), 'parentComponent' => null], ['position' => 'ASC']);
-		}
-		
-		// GET TEMPLATE
-		$view = $this->filesystem->exists($this->kernel->getProjectDir() . "/templates/${entity}/single.html.twig")
-			? "${entity}/single.html.twig"
-			: '@AkyosCms/front/single.html.twig';
-		$this->environment->addGlobal('global_element', $element);
-		
-		// RENDER
-		return $this->environment->render($view, [
-			'seo' => $this->em->getRepository(Seo::class)->findOneBy(['type' => $entityFullName, 'typeId' => $element->getId()]),
-			'element' => $element,
-			'components' => $components,
-			'entity' => $entity,
-			'slug' => $slug
-		]);
-	}
+        $components = null;
+        if ($this->cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entityFullName)) {
+            $components = $this->em->getRepository(Component::class)->findBy(['type' => $entityFullName, 'typeId' => $element->getId(), 'isTemp' => ($route === 'single_preview'), 'parentComponent' => null], ['position' => 'ASC']);
+        }
+
+        // GET TEMPLATE
+        $view = $this->filesystem->exists($this->kernel->getProjectDir() . "/templates/${entity}/single.html.twig") ? "${entity}/single.html.twig" : '@AkyosCms/front/single.html.twig';
+        $this->environment->addGlobal('global_element', $element);
+
+        // RENDER
+        return $this->environment->render($view, ['seo' => $this->em->getRepository(Seo::class)->findOneBy(['type' => $entityFullName, 'typeId' => $element->getId()]), 'element' => $element, 'components' => $components, 'entity' => $entity, 'slug' => $slug]);
+    }
 
     /**
      * @param string $slug
@@ -136,17 +123,14 @@ class FrontControllerService
      * @throws RuntimeError
      * @throws SyntaxError
      */
-	public function pageAndPreview(string $slug, string $route)
-	{
-		// FIND PAGE
-		$entity = Page::class;
-		$slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
-		/** @var Page $page */
-		$page = $this->em->getRepository($entity)->findOneBy(['slug' => $slug]) ??
-			(!$this->em->getMetadataFactory()->isTransient(Translation::class)
-				? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entity)
-				: null);
-		$now = new DateTime();
+    public function pageAndPreview(string $slug, string $route)
+    {
+        // FIND PAGE
+        $entity = Page::class;
+        $slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
+        /** @var Page $page */
+        $page = $this->em->getRepository($entity)->findOneBy(['slug' => $slug]) ?? (!$this->em->getMetadataFactory()->isTransient(Translation::class) ? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entity) : null);
+        $now = new DateTime();
 
         if (!$page) {
             $redirect301 = $this->em->getRepository(Redirect301::class)->findOneBy(['oldSlug' => $slug, 'objectType' => $entity]);
@@ -175,22 +159,16 @@ class FrontControllerService
         }
 
         // GET COMPONENTS OR CONTENT
-		$components = null;
-		if ($this->cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entity)) {
-			$components = $this->em->getRepository(Component::class)->findBy(['type' => $entity, 'typeId' => $page->getId(), 'isTemp' => ($route === 'page_preview'), 'parentComponent' => null], ['position' => 'ASC']);
-		}
-		
-		// GET TEMPLATE
-		$view = $page->getTemplate() ? 'page/' . $page->getTemplate() . '.html.twig' : '@AkyosCms/front/content.html.twig';
-		
-		$this->environment->addGlobal('global_page', $page);
-		
-		return $this->environment->render($view, [
-			'seo' => $this->em->getRepository(Seo::class)->findOneBy(['type' => $entity, 'typeId' => $page->getId()]),
-			'page' => $page,
-			'components' => $components,
-			'content' => $page->getContent(),
-			'slug' => $slug
-		]);
-	}
+        $components = null;
+        if ($this->cmsService->checkIfBundleEnable(AkyosBuilderBundle::class, BuilderOptions::class, $entity)) {
+            $components = $this->em->getRepository(Component::class)->findBy(['type' => $entity, 'typeId' => $page->getId(), 'isTemp' => ($route === 'page_preview'), 'parentComponent' => null], ['position' => 'ASC']);
+        }
+
+        // GET TEMPLATE
+        $view = $page->getTemplate() ? 'page/' . $page->getTemplate() . '.html.twig' : '@AkyosCms/front/content.html.twig';
+
+        $this->environment->addGlobal('global_page', $page);
+
+        return $this->environment->render($view, ['seo' => $this->em->getRepository(Seo::class)->findOneBy(['type' => $entity, 'typeId' => $page->getId()]), 'page' => $page, 'components' => $components, 'content' => $page->getContent(), 'slug' => $slug]);
+    }
 }

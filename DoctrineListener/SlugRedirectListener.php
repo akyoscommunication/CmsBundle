@@ -5,9 +5,9 @@ namespace Akyos\CmsBundle\DoctrineListener;
 use Akyos\CmsBundle\Annotations\SlugRedirect;
 use Akyos\CmsBundle\Entity\Redirect301;
 use Doctrine\Common\Annotations\Annotation;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use ReflectionObject;
 
 class SlugRedirectListener
@@ -28,20 +28,17 @@ class SlugRedirectListener
         $reader = new AnnotationReader;
 
         if ($reflectionObject->hasProperty('slug')) {
-
             $reflectionProperty = $reflectionObject->getProperty('slug');
             /** @var Annotation $annotation */
             $annotation = $reader->getPropertyAnnotation($reflectionProperty, SlugRedirect::class);
 
             if (null !== $annotation) {
-
                 $em = $args->getEntityManager();
                 $uow = $em->getUnitOfWork();
                 /** @var array $changeSet */
                 $changeSet = $uow->getEntityChangeSet($entity);
 
                 if (array_key_exists('slug', $changeSet)) {
-
                     /** @var Redirect301 $sameNewSlugRedirect */
                     $sameNewSlugRedirect = $em->getRepository(Redirect301::class)->findOneBy(['newSlug' => $changeSet['slug'][0], 'objectType' => $reflectionObject->getName()]);
                     /** @var Redirect301 $sameOldSlugRedirect */
@@ -77,7 +74,6 @@ class SlugRedirectListener
                     // We have to change the new entity slug, so this will fire the postUpdate event again, and create another Redirect301... but we only need one Redirect301 with first oldSlug and last newSlug to avoid collisions.
                     // Maybe new slug will match a Redirect301 oldSlug again, then we'll have to change new entity slug again, and repeat it until there is no Redirect301 with same oldSlug. This will create a "postUpdate loop" so we have to handle it.
                     if ($sameOldSlugRedirect && $sameOldSlugRedirect->getObjectId() !== $entity->getId()) {
-
                         // 3.1 - If it's the first "postUpdate loop" iteration then there is no Redirect301 to update, but no one has been created in 1, so we have to create it here. Then, in the next iterations, his newSlug will be change in 2.
                         if (!($sameNewSlugRedirect)) {
                             $redirect = new Redirect301();
