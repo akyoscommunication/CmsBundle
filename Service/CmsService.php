@@ -104,11 +104,13 @@ class CmsService
         $entity = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $constant_reflex = new ReflectionClassConstant($m->getName(), 'ENTITY_SLUG');
-            $constant_value = $constant_reflex->getValue();
-            if ((null !== $constant_value) && $m->getName()::ENTITY_SLUG === $entitySlug) {
-                $entityFullName = $m->getName();
-                $entity = array_reverse(explode('\\', $entityFullName))[0];
+            if($m->getReflectionClass()->hasConstant('ENTITY_SLUG')) {
+                $constant_reflex = new ReflectionClassConstant($m->getName(), 'ENTITY_SLUG');
+                $constant_value = $constant_reflex->getValue();
+                if ((null !== $constant_value) && $m->getName()::ENTITY_SLUG === $entitySlug) {
+                    $entityFullName = $m->getName();
+                    $entity = array_reverse(explode('\\', $entityFullName))[0];
+                }
             }
         }
 
