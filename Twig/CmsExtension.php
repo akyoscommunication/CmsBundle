@@ -298,9 +298,9 @@ class CmsExtension extends AbstractExtension
 
     /**
      * @param $entity
-     * @return string
+     * @return ?string
      */
-    public function getEntityNameSpace($entity): string
+    public function getEntityNameSpace($entity): ?string
     {
         $entityFullName = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
