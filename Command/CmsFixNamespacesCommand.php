@@ -22,6 +22,7 @@ class CmsFixNamespacesCommand extends Command
     {
         $this->em = $em;
         $this->cmsExtension = $cmsExtension;
+        parent::__construct();
     }
 
     protected function configure()
