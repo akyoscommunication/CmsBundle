@@ -288,7 +288,7 @@ class CmsExtension extends AbstractExtension
      * @param $entity
      * @return false
      */
-    public function getEntitySlug($entity): bool
+    public function getEntitySlug($entity): bool|string
     {
         if (!class_exists($entity)) {
             $entity = $this->getEntityNameSpace($entity);
