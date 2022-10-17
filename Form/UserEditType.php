@@ -56,8 +56,10 @@ class UserEditType extends AbstractType
                     'class' => 'js-select2',
                 ]
             ])
-            ->add('image', FileManagerType::class, ['label' => 'Image de profil',])
-            ->add('modifyPassword', CheckboxType::class, [
+            ->add('image', FileManagerType::class, ['label' => 'Image de profil',]);
+
+        if ($options['hasPasswordField']) {
+            $builder->add('modifyPassword', CheckboxType::class, [
                 'label' => 'Modifier le mot de passe ?',
                 'required' => false,
                 'mapped' => false,
@@ -71,6 +73,7 @@ class UserEditType extends AbstractType
                 $this->addPasswordField($form);
             }
         });
+        }
     }
 
     public function addPasswordField(FormInterface $form) {
@@ -82,6 +85,6 @@ class UserEditType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => User::class, 'modifyPassword' => false, 'allow_extra_fields' => true]);
+        $resolver->setDefaults(['data_class' => User::class, 'hasPasswordField' => false, 'modifyPassword' => false, 'allow_extra_fields' => true]);
     }
 }

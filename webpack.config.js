@@ -141,7 +141,7 @@ if (process.env.NODE_ENV === 'production') {
                 parallel: true,
                 sourceMap: false
             }),
-            new ExtractTextPlugin("main.css"),
+            //new ExtractTextPlugin("main.css"),
             new OptimizeCssAssetsPlugin()
         ]
     };
