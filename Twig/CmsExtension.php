@@ -32,10 +32,10 @@ class CmsExtension extends AbstractExtension
 
     private ContainerInterface $container;
 
-    private RequestStack $resquesStack;
+    private RequestStack $requestStack;
 
     
-    public function __construct(CmsBundleController $cmsBundleController, EntityManagerInterface $entityManager, UrlGeneratorInterface $router, CmsOptionsRepository $cmsOptionsRepository, CmsService $cmsService, ContainerInterface $container, RequestStack $resquesStack)
+    public function __construct(CmsBundleController $cmsBundleController, EntityManagerInterface $entityManager, UrlGeneratorInterface $router, CmsOptionsRepository $cmsOptionsRepository, CmsService $cmsService, ContainerInterface $container, RequestStack $requestStack)
     {
         $this->cmsBundleController = $cmsBundleController;
         $this->em = $entityManager;
