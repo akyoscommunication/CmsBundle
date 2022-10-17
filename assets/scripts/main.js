@@ -12,6 +12,7 @@ import Seo from "./modules/Seo";
 import SubmitForm from "./modules/SubmitForms";
 import FixCKEditor from "./modules/FixCKEditor";
 import Export from "./modules/Export";
+import ProfilePasswordModifier from "./modules/ProfilePasswordModifier";
 
 class Core {
     static init() {
@@ -25,6 +26,7 @@ class Core {
         SubmitForm.init();
         FixCKEditor.init();
         Export.init();
+        ProfilePasswordModifier.init();
         initCollectionType.initDataPrototype();
     }
 

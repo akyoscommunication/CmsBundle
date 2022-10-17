@@ -1,4 +1,18 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-<button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.email) }}
+    {{ form_row(form.roles) }}
+    {{ form_row(form.modifyPassword, {
+        'attr': {
+            'class': 'modify-password-checkbox',
+            'data-profile-password-field-url': path('profile_modify_password')
+        }
+    })
+    }}
+    <div id="profile-password-field-wrapper">
+        {% if form.password is defined %}
+            {{ form_row(form.password) }}
+        {% endif %}
+    </div>
+    {{ form_row(form.image) }}
+        <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

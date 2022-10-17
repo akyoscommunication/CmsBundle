@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Akyos\BuilderBundle\Entity\BuilderOptions;
@@ -31,7 +32,10 @@ class CmsExtension extends AbstractExtension
 
     private ContainerInterface $container;
 
-    public function __construct(CmsBundleController $cmsBundleController, EntityManagerInterface $entityManager, UrlGeneratorInterface $router, CmsOptionsRepository $cmsOptionsRepository, CmsService $cmsService, ContainerInterface $container)
+    private RequestStack $resquesStack;
+
+    
+    public function __construct(CmsBundleController $cmsBundleController, EntityManagerInterface $entityManager, UrlGeneratorInterface $router, CmsOptionsRepository $cmsOptionsRepository, CmsService $cmsService, ContainerInterface $container, RequestStack $resquesStack)
     {
         $this->cmsBundleController = $cmsBundleController;
         $this->em = $entityManager;
@@ -39,6 +43,7 @@ class CmsExtension extends AbstractExtension
         $this->cmsOptionsRepository = $cmsOptionsRepository;
         $this->cmsService = $cmsService;
         $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -329,7 +334,10 @@ class CmsExtension extends AbstractExtension
             if (preg_match($urlPaterne, $item->getUrl())) {
                 $link = $item->getUrl();
             } else {
-                $link = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"] . $item->getUrl());
+                // Bad way, not taking the basePath
+                //$link = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"] . $item->getUrl());
+                // let the request component handles it to automatically use BasePath if set
+                $link = $this->requestStack->getCurrentRequest()->getUriForPath($item->getUrl());
             }
         } elseif ($item->getType()) {
             if (($item->getType() === 'Page') && $item->getIdType()) {

@@ -45,9 +45,9 @@
                     {# GENERAL #}
                     <div class="tab-pane fade {{ app.request.get('tab') == 'general' or app.request.get('tab') == null ? 'show active' : '' }}"
                          id="general" role="tabpanel" aria-labelledby="general-tab">
-                        {{ form_start(form, {'action' : path(route~'_edit', {'id': el.id})}) }}
-                        {{ form_widget(form) }}
-                        {{ form_end(form) }}
+                            {{ form_start(form, {'action' : path(route~'_edit', {'id': el.id})}) }}
+                            {{ form_widget(form) }}
+                            {{ form_end(form) }}
                     </div>
                     {# POSTDOCUMENT #}
                     {% if entity is defined and entity is same as ('Akyos\\BlogBundle\\Entity\\Post') and blog_options and blog_options.hasPostDocuments %}
