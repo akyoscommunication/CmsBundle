@@ -35,10 +35,12 @@ class AdminAccessController extends AbstractController
     {
         $finder = new Finder();
         $finder->depth('== 0');
-        if (file_exists($this->getParameter('kernel.project_dir') . '/lib')) {
-            foreach ($finder->directories()->in($this->getParameter('kernel.project_dir') . '/lib') as $bundleDirectory) {
-                if (class_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess') && method_exists('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess', 'setDefaults')) {
-                    $this->forward('Akyos\\' . $bundleDirectory->getFilename() . '\Service\ExtendAdminAccess::setDefaults', []);
+        // TODO => Améliorer la recherche des classes sans avoir à manipuler le nom du dossier vendor
+        if (file_exists($this->getParameter('kernel.project_dir') . '/vendor/akyos')) {
+            foreach ($finder->directories()->in($this->getParameter('kernel.project_dir') . '/vendor/akyos') as $bundleDirectory) {
+                $filename = ucfirst(explode('-', $bundleDirectory->getFilename())[0]).'Bundle';
+                if (class_exists('Akyos\\' . $filename . '\Service\ExtendAdminAccess') && method_exists('Akyos\\' . $filename . '\Service\ExtendAdminAccess', 'setDefaults')) {
+                    $this->forward('Akyos\\' . $filename . '\Service\ExtendAdminAccess::setDefaults', []);
                 }
             }
         }
