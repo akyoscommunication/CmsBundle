@@ -202,10 +202,16 @@ class CmsService
             $operator = $customField['operator'];
             $value = $customField['value'];
 
-            if ($operator === 'IN') {
-                $customFieldValuesQuery->andWhere('cfv.value IN(:customFieldValue)');
-            } else {
-                $customFieldValuesQuery->andWhere('cfv.value ' . $operator . ' :customFieldValue');
+            switch ($operator) {
+                case 'IN':
+                    $customFieldValuesQuery->andWhere('cfv.value IN(:customFieldValue)');
+                    break;
+                case 'REGEXP':
+                    $customFieldValuesQuery->andWhere('REGEXP(cfv.value, :customFieldValue) = 1');
+                    break;
+                default:
+                    $customFieldValuesQuery->andWhere('cfv.value '.$operator.' :customFieldValue');
+                    break;
             }
 
             $customFieldValuesQuery->andWhere('cf.slug = :customFieldSlug')->setParameter('customFieldSlug', $slug)->setParameter('customFieldValue', $value);
