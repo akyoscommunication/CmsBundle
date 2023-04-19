@@ -61,7 +61,11 @@ class CmsExtension extends AbstractExtension
      */
     public function dynamicVariable($el, $field)
     {
-        $getter = 'get' . $field;
+        if(!preg_match('/^is/', $field)){
+            $getter = 'get' . $field;
+        }else{
+            $getter = $field;
+        }
         if (count(explode(';', $field)) > 1) {
             $getter1 = 'get' . explode(';', $field)[0];
             $getter2 = 'get' . explode(';', $field)[1];
