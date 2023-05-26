@@ -49,12 +49,6 @@ class CmsOptions
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $recaptchaPrivateKey;
-    
-     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-	private $emailTransport;
-	
-	#[ORM\Column(type: 'string', length: 255, nullable: true)]
-	private $smsTransport;
 
     public function getId(): ?int
     {
@@ -201,30 +195,6 @@ class CmsOptions
     public function setRecaptchaPrivateKey(string $recaptchaPrivateKey): self
     {
         $this->recaptchaPrivateKey = $recaptchaPrivateKey;
-
-        return $this;
-    }
-
-    public function getEmailTransport(): ?string
-    {
-        return $this->emailTransport;
-    }
-
-    public function setEmailTransport(?string $emailTransport): self
-    {
-        $this->emailTransport = $emailTransport;
-
-        return $this;
-    }
-
-    public function getSmsTransport(): ?string
-    {
-        return $this->smsTransport;
-    }
-
-    public function setSmsTransport(?string $smsTransport): self
-    {
-        $this->smsTransport = $smsTransport;
 
         return $this;
     }
