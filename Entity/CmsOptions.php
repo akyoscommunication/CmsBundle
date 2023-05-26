@@ -49,6 +49,12 @@ class CmsOptions
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $recaptchaPrivateKey;
+    
+     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+	private $emailTransport;
+	
+	#[ORM\Column(type: 'string', length: 255, nullable: true)]
+	private $smsTransport;
 
     public function getId(): ?int
     {
