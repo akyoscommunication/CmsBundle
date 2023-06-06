@@ -2,6 +2,21 @@
   "name": "akyos/cms-bundle",
   "description": "AkyosCMS for Symfony - CMS",
   "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lilian Carneau",
+      "email": "lilian@akyos.com"
+    },
+    {
+      "name": "Thomas Sebert",
+      "email": "thomas@akyos.com"
+    },
+    {
+      "name": "Akyos Communication",
+       "homepage": "https://akyos.com"
+    }
+  ],
   "require": {
     "php": ">=7.4",
     "ext-ctype": "*",
@@ -25,21 +40,6 @@
     "liip/test-fixtures-bundle": "^1.0",
     "theofidry/alice-data-fixtures": "^1.2"
   },
-  "license": "proprietary",
-  "authors": [
-    {
-      "name": "Lilian Carneau",
-      "email": "lilian@akyos.com"
-    },
-    {
-      "name": "Johan JOULKVA",
-      "email": "johan@akyos.com"
-    },
-    {
-      "name": "Thomas Sebert",
-      "email": "thomas@akyos.com"
-    }
-  ],
   "scripts": {
     "pre-autoload-dump": [
       "composer config extra.symfony.allow-contrib true"
