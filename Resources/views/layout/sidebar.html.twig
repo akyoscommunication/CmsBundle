@@ -57,11 +57,9 @@
             </li>
         {% endif %}
 
-         {% if is_granted('ROLE_SUPER_ADMIN') %}
         <li class="divider"></li>
         {# BUNDLES EXTENSIONS #}
-                {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\SidebarController::getBundleSidebar', {'route': route})) }}
-         {% endif %}
+        {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\SidebarController::getBundleSidebar', {'route': route})) }}
 
         <li class="divider"></li>
         {# CUSTOM EXTENSIONS #}
