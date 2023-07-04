@@ -1,10 +1,10 @@
 {% extends '@AkyosCms/layout.html.twig' %}
 
-{% block title %}CmsBundle - Options{% endblock %}
+{% block title %}{{ bundle_name|default('CmsBundle') }} - Options{% endblock %}
 
 {% block page_content %}
     <div class="aky-header-page">
-        <h1 class="aky-header-page__title">CmsBundle - Options</h1>
+        <h1 class="aky-header-page__title">{{ bundle_name|default('CmsBundle') }} - Options</h1>
     </div>
     <div class="form mt20">
         {{ include('@AkyosCms/cms_options/_form.html.twig') }}
