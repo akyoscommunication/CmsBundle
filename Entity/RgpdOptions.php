@@ -210,7 +210,7 @@ class RgpdOptions
 
     public function getScriptInjection(): ?string
     {
-        return $this->serviceUsed;
+        return $this->scriptInjection;
     }
 
     public function setScriptInjection(string $scriptInjection): self
