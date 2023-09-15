@@ -56,6 +56,9 @@ class RgpdOptions
     #[ORM\Column(type: 'string', length: 255)]
     private $serviceUsed;
 
+    #[ORM\Column(type: 'text')]
+    private $scriptInjection;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -201,6 +204,18 @@ class RgpdOptions
     public function setServiceUsed(string $serviceUsed): self
     {
         $this->serviceUsed = $serviceUsed;
+
+        return $this;
+    }
+
+    public function getScriptInjection(): ?string
+    {
+        return $this->serviceUsed;
+    }
+
+    public function setScriptInjection(string $scriptInjection): self
+    {
+        $this->scriptInjection = $scriptInjection;
 
         return $this;
     }
