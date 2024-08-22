@@ -2,16 +2,23 @@
     position: fixed;
     z-index: 999999999;
 
+    #tarteaucitronBack {
+        display: none !important;
+    }
+
+    #tarteaucitronIcon {
+        display: none !important;
+    }
+
     #tarteaucitron {
         //top: 0 !important;
         background-color: rgba(0, 0, 0, .85);
         position: fixed;
         z-index: 9;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        display: none;
+        left: 0 !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
 
         .tarteaucitronSelfLink {
             //display: none;
@@ -29,12 +36,14 @@
 
         #tarteaucitronServices {
             padding: 4rem 5rem;
-            margin: 5rem auto 0;
+            margin: auto !important;
             background-color: $white;
             width: 50%;
-            max-height: 85vh !important;
+            max-height: 65vh !important;
             overflow-y: scroll;
             position: relative;
+            top: 50%;
+            transform: translateY(-50%);
 
             > .tarteaucitron {
                 &Line {
