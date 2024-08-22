@@ -5,15 +5,19 @@ namespace Akyos\CmsBundle\Command;
 use Akyos\CmsBundle\Entity\Seo;
 use Akyos\CmsBundle\Twig\CmsExtension;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use Symfony\Component\Console\Attribute\AsCommand;
+
+#[AsCommand(
+    name: 'cms:fix-namespaces',
+)]
 class CmsFixNamespacesCommand extends Command
 {
-    protected static $defaultName = 'cms:fix-namespaces';
-
     private EntityManagerInterface $em;
 
     private CmsExtension $cmsExtension;
