@@ -82,7 +82,7 @@ class FrontControllerService
                     return new RedirectResponse($redirectUrl, 301);
                 }
             }
-            throw new NotFoundHttpException("Cette page n'existe pas! ( ${route} )");
+            throw new NotFoundHttpException("Cette page n'existe pas! ( {$route} )");
         }
 
         if (property_exists($element, 'published') && $route !== 'single_preview') {
@@ -90,14 +90,14 @@ class FrontControllerService
                 if ($this->checker->isGranted('ROLE_ADMIN')) {
                     return new RedirectResponse($this->router->generate('single_preview', ['entitySlug' => $entitySlug, 'slug' => $slug]));
                 }
-                throw new NotFoundHttpException("Cette page n'existe pas! ( ${entity} )");
+                throw new NotFoundHttpException("Cette page n'existe pas! ( {$entity} )");
             }
 
             if (property_exists($element, 'publishedAt') && ($element->getPublishedAt() > $now)) {
                 if ($this->checker->isGranted('ROLE_ADMIN')) {
                     return new RedirectResponse($this->router->generate('single_preview', ['entitySlug' => $entitySlug, 'slug' => $slug]));
                 }
-                throw new NotFoundHttpException("Cette page n'existe pas! ( ${entity} )");
+                throw new NotFoundHttpException("Cette page n'existe pas! ( {$entity} )");
             }
         }
 
@@ -108,7 +108,7 @@ class FrontControllerService
         }
 
         // GET TEMPLATE
-        $view = $this->filesystem->exists($this->kernel->getProjectDir() . "/templates/${entity}/single.html.twig") ? "${entity}/single.html.twig" : '@AkyosCms/front/single.html.twig';
+        $view = $this->filesystem->exists($this->kernel->getProjectDir() . "/templates/{$entity}/single.html.twig") ? "{$entity}/single.html.twig" : '@AkyosCms/front/single.html.twig';
         $this->environment->addGlobal('global_element', $element);
 
         // RENDER
@@ -139,7 +139,7 @@ class FrontControllerService
                 $redirectUrl = $this->router->generate($route, ['slug' => $page->getSlug()]);
                 return new RedirectResponse($redirectUrl, 301);
             }
-            throw new NotFoundHttpException("Cette page n'existe pas! ( ${entity} )");
+            throw new NotFoundHttpException("Cette page n'existe pas! ( {$entity} )");
         }
 
         if ($route !== 'page_preview') {
@@ -147,14 +147,14 @@ class FrontControllerService
                 if ($this->checker->isGranted('ROLE_ADMIN')) {
                     return new RedirectResponse($this->router->generate('page_preview', ['slug' => $slug]));
                 }
-                throw new NotFoundHttpException("Cette page n'existe pas! ( ${entity} )");
+                throw new NotFoundHttpException("Cette page n'existe pas! ( {$entity} )");
             }
 
             if ($page->getPublishedAt() > $now) {
                 if ($this->checker->isGranted('ROLE_ADMIN')) {
                     return new RedirectResponse($this->router->generate('page_preview', ['slug' => $slug]));
                 }
-                throw new NotFoundHttpException("Cette page n'existe pas! ( ${entity} )");
+                throw new NotFoundHttpException("Cette page n'existe pas! ( {$entity} )");
             }
         }
 
