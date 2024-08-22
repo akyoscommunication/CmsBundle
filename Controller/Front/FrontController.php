@@ -119,7 +119,7 @@ class FrontController extends AbstractController
             throw $this->createNotFoundException('Aucun élément pour cette entité! ');
         }
         // GET TEMPLATE
-        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/archive.html.twig') ? "/${entity}/archive.html.twig" : '@AkyosCms/front/archive.html.twig';
+        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/archive.html.twig') ? "/{$entity}/archive.html.twig" : '@AkyosCms/front/archive.html.twig';
         // RENDER
         return $this->render($view, ['elements' => $elements, 'entity' => $entity, 'slug' => $entitySlug]);
     }
@@ -205,7 +205,7 @@ class FrontController extends AbstractController
             $elements = $paginator->paginate($qb->setParameters($params)->getQuery(), $request->query->getInt('page', 1), 10);
         }
         // GET TEMPLATE
-        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/category.html.twig') ? "${entity}/category.html.twig" : '@AkyosCms/front/category.html.twig';
+        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $entity . '/category.html.twig') ? "{$entity}/category.html.twig" : '@AkyosCms/front/category.html.twig';
         // RENDER
         return $this->render($view, ['elements' => $elements, 'entity' => $entity, 'slug' => $category, 'category' => $categoryObject]);
     }
@@ -251,7 +251,7 @@ class FrontController extends AbstractController
         }
         $elements = $tagObject->$getter();
         // GET TEMPLATE
-        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $parentEntity . '/tag.html.twig') ? "${parentEntity}/tag.html.twig" : '@AkyosCms/front/tag.html.twig';
+        $view = $filesystem->exists($kernel->getProjectDir() . '/templates/' . $parentEntity . '/tag.html.twig') ? "{$parentEntity}/tag.html.twig" : '@AkyosCms/front/tag.html.twig';
         // RENDER
         return $this->render($view, ['elements' => $elements, 'entity' => $entity, 'slug' => $tag, 'tag' => $tagObject]);
     }
