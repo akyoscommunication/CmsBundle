@@ -4,12 +4,16 @@ namespace Akyos\CmsBundle\DoctrineListener;
 
 use Akyos\CmsBundle\Annotations\SlugRedirect;
 use Akyos\CmsBundle\Entity\Redirect301;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Events;
 use ReflectionObject;
 
+#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', lazy: true)]
 class SlugRedirectListener
 {
     // On post update, if entity has "slug" property and slug has changed, create a new Redirect301 object with old slug and objectId.
@@ -17,7 +21,7 @@ class SlugRedirectListener
     // Find is there already is a Redirect301 object with with same oldSlug and if so change the new slug.
     // This way we'll never have duplicate oldSlug on same entity over the time.
 
-    public function postUpdate(LifecycleEventArgs $args): bool
+    public function postUpdate(PostUpdateEventArgs $args): bool
     {
         // Update object
         $entity = $args->getEntity();
