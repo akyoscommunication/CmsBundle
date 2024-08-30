@@ -70,8 +70,10 @@ class ExportController extends AbstractController
             if ($propertyType && !in_array($propertyType[0]->getClassName(), $allreadyCheck, true) && count(explode('\\', $propertyType[0]->getClassName())) > 1) {
                 $returnedTab = $this->pushProperties($propertyType[0]->getClassName(), $propertyInfo->getProperties($propertyType[0]->getClassName()), $propertyInfo, $returnedTab, $allreadyCheck, ($currentDepth ?? '') . $propertyName . '.');
             } elseif ($propertyType) {
-                if (!$propertyType[0]->getCollectionValueType()) {
-                    $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $propertyType[0]->getClassName()];
+                /** @var \Symfony\Component\PropertyInfo\Type $type */
+                $type = $propertyType[0];
+                if ($type && !$type->getCollectionValueTypes()) {
+                    $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $type->getClassName()];
                 }
             } else {
                 $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $entity];
