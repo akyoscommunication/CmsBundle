@@ -2,9 +2,9 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\Redirect301Repository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Akyos\CmsBundle\Repository\Redirect301Repository;
 
 #[ORM\Entity(repositoryClass: Redirect301Repository::class)]
 class Redirect301

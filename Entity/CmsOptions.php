@@ -2,9 +2,8 @@
 
 namespace Akyos\CmsBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Akyos\CmsBundle\Entity\Page;
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CmsOptionsRepository::class)]
 class CmsOptions

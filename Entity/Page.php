@@ -3,12 +3,12 @@
 namespace Akyos\CmsBundle\Entity;
 
 use Akyos\CmsBundle\Annotations\SlugRedirect;
+use Akyos\CmsBundle\Repository\PageRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
-use Akyos\CmsBundle\Repository\PageRepository;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 class Page implements Translatable
@@ -22,56 +22,37 @@ class Page implements Translatable
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     /**
-     * @Gedmo\Slug(fields={"title"}, updatable=false)
      * @SlugRedirect
-     * @Gedmo\Translatable
      */
+    #[Gedmo\Slug(fields: ['title'], updatable: false)]
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'boolean')]
     private $published;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $template;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'integer')]
     private $position;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 999999999999999999, nullable: true)]
     private $content;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $thumbnail;
-
-    /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     * this is not a mapped field of entity metadata, just a simple property
-     */
-    private $locale;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $publishedAt;

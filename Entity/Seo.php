@@ -2,11 +2,11 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\SeoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
-use Akyos\CmsBundle\Repository\SeoRepository;
 
 #[ORM\Entity(repositoryClass: SeoRepository::class)]
 class Seo implements Translatable
@@ -18,27 +18,19 @@ class Seo implements Translatable
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $metaTitle;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'text', nullable: true)]
     private $metaDescription;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'boolean')]
     private $noIndex;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $metaRobots;
 

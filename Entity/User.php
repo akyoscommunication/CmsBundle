@@ -2,9 +2,9 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\UserRepository;
 use Akyos\CoreBundle\Entity\BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use Akyos\CmsBundle\Repository\UserRepository;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]

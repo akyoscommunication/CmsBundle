@@ -2,9 +2,8 @@
 
 namespace Akyos\CmsBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Akyos\CmsBundle\Entity\Page;
 use Akyos\CmsBundle\Repository\RgpdOptionsRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RgpdOptionsRepository::class)]
 class RgpdOptions

@@ -2,14 +2,14 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\MenuAreaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Akyos\CmsBundle\Entity\Menu;
-use Akyos\CmsBundle\Repository\MenuAreaRepository;
+use Gedmo\Translatable\Translatable;
 
 #[ORM\Entity(repositoryClass: MenuAreaRepository::class)]
-class MenuArea
+class MenuArea implements Translatable
 {
     use TimestampableEntity;
 
@@ -18,16 +18,12 @@ class MenuArea
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @Gedmo\Slug(fields={"name"})
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
+    #[Gedmo\Slug(fields: ['name'])]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 

@@ -2,16 +2,14 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\MenuItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OrderBy;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
-use Akyos\CmsBundle\Entity\MenuItem;
-use Akyos\CmsBundle\Entity\Menu;
-use Akyos\CmsBundle\Repository\MenuItemRepository;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MenuItemRepository::class)]
 class MenuItem implements Translatable
@@ -23,45 +21,31 @@ class MenuItem implements Translatable
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $url;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'boolean')]
     private $isParent;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $type;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'integer', nullable: true)]
     private $idType;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'boolean')]
     private $isList;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'integer')]
     private $position;
 
@@ -76,22 +60,16 @@ class MenuItem implements Translatable
     #[OrderBy(['position' => 'ASC'])]
     private $menuItemsChilds;
 
-    /**
-     * @Gedmo\Slug(fields={"title"})
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
+    #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $target;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $isCategoryList;
 

@@ -2,13 +2,12 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\OptionCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Akyos\CmsBundle\Entity\Option;
-use Akyos\CmsBundle\Repository\OptionCategoryRepository;
 
 #[ORM\Entity(repositoryClass: OptionCategoryRepository::class)]
 class OptionCategory
@@ -23,9 +22,7 @@ class OptionCategory
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Gedmo\Slug(fields={"title"})
-     */
+    #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 

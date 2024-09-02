@@ -2,13 +2,12 @@
 
 namespace Akyos\CmsBundle\Entity;
 
+use Akyos\CmsBundle\Repository\OptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JsonException;
-use Akyos\CmsBundle\Entity\OptionCategory;
-use Akyos\CmsBundle\Repository\OptionRepository;
 
 #[ORM\Entity(repositoryClass: OptionRepository::class)]
 #[Orm\Table(name: '`option`')]
@@ -21,23 +20,17 @@ class Option implements Translatable
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Gedmo\Slug(fields={"title"})
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Translatable]
+    #[Gedmo\Slug(fields: ['title'])]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @Gedmo\Translatable
-     */
-    #[ORM\Column(type: 'string', length: 999999999999999999, nullable: true)]
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: 'string', length: 9999, nullable: true)]
     private $value;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
