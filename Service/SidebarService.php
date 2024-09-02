@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SidebarService extends AbstractController
 {
-    public function getBundleSidebar($route): Response
+    public function getBundleSidebar($route): string
     {
         $html = "";
 
@@ -31,10 +31,10 @@ class SidebarService extends AbstractController
             }
         }
 
-        return new Response($html);
+        return $html;
     }
 
-    public function getCustomSidebar($route): Response
+    public function getCustomSidebar($route): string
     {
         $html = "";
 
@@ -48,10 +48,10 @@ class SidebarService extends AbstractController
             $html .= $response->getContent();
         }
 
-        return new Response($html);
+        return $html;
     }
 
-    public function getOptionsSidebar($route): Response
+    public function getOptionsSidebar($route): string
     {
         $html = "";
 
@@ -67,6 +67,6 @@ class SidebarService extends AbstractController
             }
         }
 
-        return new Response($html);
+        return $html;
     }
 }
