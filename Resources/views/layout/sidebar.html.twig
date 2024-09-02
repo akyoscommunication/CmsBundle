@@ -59,11 +59,11 @@
 
         <li class="divider"></li>
         {# BUNDLES EXTENSIONS #}
-        {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\SidebarController::getBundleSidebar', {'route': route})) }}
+        {{ getBundleSidebar(route)|raw }}
 
         <li class="divider"></li>
         {# CUSTOM EXTENSIONS #}
-        {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\SidebarController::getCustomSidebar', {'route': route})) }}
+        {{ getCustomSidebar(route)|raw }}
 
         <li class="divider"></li>
         {# SETTINGS #}
@@ -108,7 +108,7 @@
                         </li>
                     {% endif %}
                     {# BUNDLES OPTIONS EXTENSIONS #}
-                    {{ render(controller('Akyos\\CmsBundle\\Controller\\Back\\SidebarController::getOptionsSidebar', {'route': route})) }}
+                    {{ getOptionsSidebar(route)|raw }}
                 </ul>
             </li>
         {% endif %}
