@@ -1,12 +1,19 @@
 <?php
 
-namespace Akyos\CmsBundle\Controller\Back;
+namespace Akyos\CmsBundle\Service;
 
+use Akyos\CmsBundle\Entity\CmsOptions;
+use Akyos\CmsBundle\Entity\CustomFieldValue;
+use Akyos\CmsBundle\Repository\CustomFieldRepository;
+use Akyos\CmsBundle\Repository\CustomFieldValueRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+use ReflectionClassConstant;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 
-class SidebarController extends AbstractController
+class SidebarService extends AbstractController
 {
     public function getBundleSidebar($route): Response
     {
@@ -35,7 +42,7 @@ class SidebarController extends AbstractController
             $response = $this->forward('App\Service\ExtendSidebar::getTemplate', ['route' => $route]);
             $html .= $response->getContent();
         }
-        
+
         if (class_exists('App\Services\ExtendSidebar')) {
             $response = $this->forward('App\Services\ExtendSidebar::getTemplate', ['route' => $route]);
             $html .= $response->getContent();

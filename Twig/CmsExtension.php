@@ -7,6 +7,7 @@ use Akyos\CmsBundle\Entity\Option;
 use Akyos\CmsBundle\Entity\OptionCategory;
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
 use Akyos\CmsBundle\Service\CmsService;
+use Akyos\CmsBundle\Service\SidebarService;
 use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,30 +21,17 @@ use Akyos\BuilderBundle\Service\Builder;
 
 class CmsExtension extends AbstractExtension
 {
-    private CmsBundleController $cmsBundleController;
+    public function __construct(
+        private readonly CmsBundleController $cmsBundleController,
+        private readonly UrlGeneratorInterface $router,
+        private readonly EntityManagerInterface $em,
+        private readonly CmsOptionsRepository $cmsOptionsRepository,
+        private readonly CmsService $cmsService,
+        private readonly ContainerInterface $container,
+        private readonly RequestStack $requestStack,
+        private readonly SidebarService $sidebarService
+    ) {
 
-    private EntityManagerInterface $em;
-
-    private UrlGeneratorInterface $router;
-
-    private CmsOptionsRepository $cmsOptionsRepository;
-
-    private CmsService $cmsService;
-
-    private ContainerInterface $container;
-
-    private RequestStack $requestStack;
-
-    
-    public function __construct(CmsBundleController $cmsBundleController, EntityManagerInterface $entityManager, UrlGeneratorInterface $router, CmsOptionsRepository $cmsOptionsRepository, CmsService $cmsService, ContainerInterface $container, RequestStack $requestStack)
-    {
-        $this->cmsBundleController = $cmsBundleController;
-        $this->em = $entityManager;
-        $this->router = $router;
-        $this->cmsOptionsRepository = $cmsOptionsRepository;
-        $this->cmsService = $cmsService;
-        $this->container = $container;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -51,7 +39,32 @@ class CmsExtension extends AbstractExtension
      */
     public function getFunctions(): array
     {
-        return [new TwigFunction('dynamicVariable', [$this, 'dynamicVariable']), new TwigFunction('hasSeo', [$this, 'hasSeo']), new TwigFunction('getEntitySlug', [$this, 'getEntitySlug']), new TwigFunction('getEntityNameSpace', [$this, 'getEntityNameSpace']), new TwigFunction('isArchive', [$this, 'isArchive']), new TwigFunction('getMenu', [$this, 'getMenu']), new TwigFunction('useClosure', [$this, 'useClosure']), new TwigFunction('getOption', [$this, 'getOption']), new TwigFunction('getOptions', [$this, 'getOptions']), new TwigFunction('getElementSlug', [$this, 'getElementSlug']), new TwigFunction('getElement', [$this, 'getElement']), new TwigFunction('getElementsList', [$this, 'getElementsList']), new TwigFunction('getCategoryList', [$this, 'getCategoryList']), new TwigFunction('getPermalink', [$this, 'getPermalink']), new TwigFunction('getPermalinkById', [$this, 'getPermalinkById']), new TwigFunction('checkChildActive', [$this, 'checkChildActive']), new TwigFunction('getCustomField', [$this->cmsService, 'getCustomField']), new TwigFunction('setCustomField', [$this->cmsService, 'setCustomField']), new TwigFunction('searchByCustomField', [$this->cmsService, 'searchByCustomField']), new TwigFunction('getBundleTab', [$this, 'getBundleTab']), new TwigFunction('getBundleTabContent', [$this, 'getBundleTabContent']),];
+        return [
+            new TwigFunction('dynamicVariable', [$this, 'dynamicVariable']),
+            new TwigFunction('hasSeo', [$this, 'hasSeo']),
+            new TwigFunction('getEntitySlug', [$this, 'getEntitySlug']),
+            new TwigFunction('getEntityNameSpace', [$this, 'getEntityNameSpace']),
+            new TwigFunction('isArchive', [$this, 'isArchive']),
+            new TwigFunction('getMenu', [$this, 'getMenu']),
+            new TwigFunction('useClosure', [$this, 'useClosure']),
+            new TwigFunction('getOption', [$this, 'getOption']),
+            new TwigFunction('getOptions', [$this, 'getOptions']),
+            new TwigFunction('getElementSlug', [$this, 'getElementSlug']),
+            new TwigFunction('getElement', [$this, 'getElement']),
+            new TwigFunction('getElementsList', [$this, 'getElementsList']),
+            new TwigFunction('getCategoryList', [$this, 'getCategoryList']),
+            new TwigFunction('getPermalink', [$this, 'getPermalink']),
+            new TwigFunction('getPermalinkById', [$this, 'getPermalinkById']),
+            new TwigFunction('checkChildActive', [$this, 'checkChildActive']),
+            new TwigFunction('getCustomField', [$this->cmsService, 'getCustomField']),
+            new TwigFunction('setCustomField', [$this->cmsService, 'setCustomField']),
+            new TwigFunction('searchByCustomField', [$this->cmsService, 'searchByCustomField']),
+            new TwigFunction('getBundleTab', [$this, 'getBundleTab']),
+            new TwigFunction('getBundleTabContent', [$this, 'getBundleTabContent']),
+            new TwigFunction('getBundleSidebar', [$this->sidebarService, 'getBundleSidebar']),
+            new TwigFunction('getCustomSidebar', [$this->sidebarService, 'getCustomSidebar']),
+            new TwigFunction('getOptionsSidebar', [$this->sidebarService, 'getOptionsSidebar']),
+        ];
     }
 
     /**
