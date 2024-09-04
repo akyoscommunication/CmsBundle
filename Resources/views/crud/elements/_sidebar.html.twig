@@ -1,6 +1,6 @@
 {% set details = '' %}
 {% set entitySlug = getEntitySlug(entity) %}
-{% if view is defined %}
+{% if view is defined and el.slug is defined %}
     {% if view == 'page' %}
         {% set details = path(view, {'slug': el.slug}) %}
     {% elseif view == 'single' %}
@@ -16,7 +16,7 @@
     {% if details != '' %}
         <a class="btn btn-sm mb-3" target="_blank" href="{{ details }}"><i class="fas fa-eye"></i></a>
     {% endif %}
-    {% if entitySlug %}
+    {% if entitySlug and el.slug is defined %}
         {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-sm btn-warning mb-3" target="_blank"
                href="{{ path((entity is same as ('Akyos\\CmsBundle\\Entity\\Page') ? 'page_preview' : 'single_preview'), {'entitySlug': getEntitySlug(entity), 'slug': el.slug}) }}">Prévisualiser</a>
