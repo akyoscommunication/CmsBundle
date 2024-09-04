@@ -16,6 +16,13 @@ services:
         tags: [ 'controller.service_arguments' ]
         public: true
 
+    Akyos\CmsBundle\Controller\Back\SeoController:
+        resource: './../../Controller/Back/SeoController.php'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
     twig.extension.globals_extension:
         alias: 'Akyos\CmsBundle\Twig\GlobalsExtension'
         public: true
