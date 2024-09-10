@@ -13,15 +13,15 @@ class Rgpd {
             akyCookiesgestion.click(function () {
                 tarteaucitron.userInterface.openPanel();
             })
-
-            if (akyCookiesgestion.data('ua').length) {
+            
+            if (akyCookiesgestion.data('ua') && akyCookiesgestion.data('ua').length) {
                 tarteaucitron.user.analyticsUa = akyCookiesgestion.data('ua');
                 tarteaucitron.user.analyticsMore = function () { /* add here your optionnal ga.push() */
                 };
                 (tarteaucitron.job = tarteaucitron.job || []).push("analytics");
             }
-
-            if (akyCookiesgestion.data('gtm').length) {
+            
+            if (akyCookiesgestion.data('gtm') && akyCookiesgestion.data('gtm').length) {
                 tarteaucitron.user.googletagmanagerId = akyCookiesgestion.data('gtm');
                 (tarteaucitron.job = tarteaucitron.job || []).push("googletagmanager");
             }
