@@ -26,13 +26,13 @@
     "ext-intl": "*",
     "ext-fileinfo": "*",
     "league/csv": "^9.0",
-    "beberlei/doctrineextensions": "^1.5",
+    "beberlei/doctrineextensions": ">=1.3",
     "friendsofsymfony/ckeditor-bundle": "*",
     "knplabs/knp-paginator-bundle": "*",
     "stof/doctrine-extensions-bundle": "^1.9",
     "symfony/apache-pack": "^1.0",
-    "symfony/mailer": ">=7.0",
-    "symfony/webpack-encore-bundle": ">=2.1",
+    "symfony/mailer": ">=6.0",
+    "symfony/webpack-encore-bundle": ">=1.0",
     "karser/karser-recaptcha3-bundle": "^0.1.0@dev"
   },
   "require-dev": {
