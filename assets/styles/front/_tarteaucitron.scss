@@ -1,6 +1,6 @@
 #tarteaucitronRoot {
     position: fixed;
-    z-index: 999999999;
+    z-index: 9;
 
     #tarteaucitronBack {
         display: none !important;
@@ -14,7 +14,7 @@
         //top: 0 !important;
         background-color: rgba(0, 0, 0, .85);
         position: fixed;
-        z-index: 9;
+        z-index: 99999;
         left: 0 !important;
         top: 0 !important;
         right: 0 !important;
