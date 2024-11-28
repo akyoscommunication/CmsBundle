@@ -47,7 +47,7 @@ class Page implements Translatable
     private $position;
 
     #[Gedmo\Translatable]
-    #[ORM\Column(type: 'string', length: 999999999999999999, nullable: true)]
+    #[ORM\Column(type: 'string', length: 999999999, nullable: true)]
     private $content;
 
     #[Gedmo\Translatable]
