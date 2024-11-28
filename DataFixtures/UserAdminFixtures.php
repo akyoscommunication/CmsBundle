@@ -16,7 +16,7 @@ class UserAdminFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = new User();
         $user->setEmail("admin@akyos.fr")->setPassword($this->passwordHasher->hashPassword($user, 'root'))->setRoles(["ROLE_AKYOS"]);
