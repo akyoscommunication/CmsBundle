@@ -12,7 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class CmsInstallFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $homepage = new Page();
         $homepage->setTitle('Accueil')->setSlug('accueil')->setPublished(true)->setPosition(0);
