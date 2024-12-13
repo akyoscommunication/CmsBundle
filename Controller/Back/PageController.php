@@ -109,7 +109,7 @@ class PageController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    #[Route(path: '/{id}', name: 'delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'delete', methods: ['DELETE', 'POST'])]
     public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CmsService $cmsService, ContainerInterface $container, EntityManagerInterface $entityManager): Response
     {
         $entity = get_class($page);
