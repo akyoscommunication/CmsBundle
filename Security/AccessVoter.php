@@ -3,9 +3,10 @@
 namespace Akyos\CmsBundle\Security;
 
 use Akyos\CmsBundle\Repository\AdminAccessRepository;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class AccessVoter extends Voter
 {
@@ -16,12 +17,12 @@ class AccessVoter extends Voter
         $this->security = $security;
     }
 
-    protected function supports($attribute, $subject): bool
+    protected function supports(string $attribute, mixed $subject): bool
     {
         return $this->adminAccessRepository->findOneBy(['slug' => $attribute]) && $this->security->getUser();
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $role = $this->adminAccessRepository->findOneBy(['slug' => $attribute]);
         $r = true;
