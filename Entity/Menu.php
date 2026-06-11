@@ -25,10 +25,8 @@ class Menu implements Translatable
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Gedmo\Slug(fields={"title"})
-     * @Gedmo\Translatable
-     */
+    #[Gedmo\Slug(fields: ['title'])]
+    #[Gedmo\Translatable]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 

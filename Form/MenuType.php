@@ -12,14 +12,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MenuType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('title', null, ['label' => 'Titre du menu', 'help' => 'Insérez votre titre ici'])->add('menuArea', EntityType::class, ['label' => 'Zone de menu', 'help' => 'Ce menu doit-il apparaître dans une zone de menu ?', 'required' => false, 'class' => MenuArea::class, 'query_builder' => function (MenuAreaRepository $er) {
                 return $er->createQueryBuilder('ma')->orderBy('ma.name', 'ASC');
             }, 'choice_label' => 'name', 'placeholder' => "Choisissez une zone"]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => Menu::class,]);
     }

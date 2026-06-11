@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CmsOptionsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('siteTitle', TextType::class, ['label' => 'Titre du site', 'required' => false])->add('favicon', FileManagerType::class, ['label' => 'Favicon (format ico)', 'required' => false,])->add('siteLogo', FileManagerType::class, ['label' => 'Logo du site', 'required' => false,])->add('backMainColor', ColorType::class, ['label' => 'Couleur principale du back office', 'required' => false])->add('homepage', EntityType::class, ['label' => "Page d'accueil", 'required' => false, 'class' => Page::class, 'query_builder' => function (PageRepository $er) {
                 return $er->createQueryBuilder('p')->orderBy('p.position', 'ASC');
@@ -57,7 +57,7 @@ class CmsOptionsType extends AbstractType
             }, 'multiple' => true, 'expanded' => true]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => CmsOptions::class, 'entities' => []]);
     }

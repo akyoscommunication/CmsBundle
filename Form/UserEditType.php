@@ -30,7 +30,7 @@ class UserEditType extends AbstractType
         $this->container = $container;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $roles = $this->container->getParameter('user_roles');
         if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
@@ -83,7 +83,7 @@ class UserEditType extends AbstractType
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => User::class, 'hasPasswordField' => false, 'modifyPassword' => false, 'allow_extra_fields' => true]);
     }

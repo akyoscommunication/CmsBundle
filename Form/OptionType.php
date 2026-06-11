@@ -21,7 +21,7 @@ class OptionType extends AbstractType
 
     protected array $pages;
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->optionId = $options['option'];
         $this->pages = $options['pages'];
@@ -61,7 +61,7 @@ class OptionType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => Option::class, 'option' => null, 'pages' => null]);
     }

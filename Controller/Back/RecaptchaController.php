@@ -4,10 +4,10 @@ namespace Akyos\CmsBundle\Controller\Back;
 
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/recaptcha', name: 'recaptcha_')]
 class RecaptchaController extends AbstractController

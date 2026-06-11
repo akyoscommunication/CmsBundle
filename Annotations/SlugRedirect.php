@@ -2,14 +2,11 @@
 
 namespace Akyos\CmsBundle\Annotations;
 
-use Doctrine\Common\Annotations\Annotation;
+use Attribute;
 
-/**
- * @Annotation
- * @Target("PROPERTY")
- */
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class SlugRedirect
 {
     // Used in Akyos\CmsBundle\DoctrineListener\SlugRedirectListener
-    // Add annotation on slug that are used in urls to prevent 404 on slug change
+    // Add attribute on slug that are used in urls to prevent 404 on slug change
 }

@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MenuItemType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Menu $menu */
         $menu = $options['menu'];
@@ -23,7 +23,7 @@ class MenuItemType extends AbstractType
             }, 'label' => 'Element parent', 'help' => 'Choisissez un élément parent']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => MenuItem::class, 'menu' => null]);
     }

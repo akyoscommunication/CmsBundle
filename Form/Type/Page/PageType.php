@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PageType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Page $page */
         $page = $builder->getData();
@@ -26,7 +26,7 @@ class PageType extends AbstractType
         $builder->add('published', CheckboxType::class, ['label' => 'Publiée ?',])->add('template', TextType::class, ['label' => 'Template de la page', 'required' => false])->add('content', CKEditorType::class, ['required' => false, 'config' => ['placeholder' => "Texte", 'height' => 50, 'entities' => false, 'basicEntities' => false, 'entities_greek' => false, 'entities_latin' => false,], 'label' => 'Contenu de la page'])->add('thumbnail', FileManagerType::class, ['label' => 'Image de mise en avant',])->add('publishedAt', DateType::class, ['widget' => 'single_text', 'label' => 'Date de publication']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => Page::class,]);
     }

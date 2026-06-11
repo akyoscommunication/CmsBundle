@@ -25,7 +25,7 @@ class UserType extends AbstractType
         $this->container = $container;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $roles = $this->container->getParameter('user_roles');
         if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
@@ -40,7 +40,7 @@ class UserType extends AbstractType
         $builder->add('email', EmailType::class, ['label' => "E-mail", 'help' => "Renseignez l'email de l'utilisateur"])->add('roles', ChoiceType::class, ['label' => "Rôle de l'utilisateur", 'help' => "En fonction de son rôle, l'utilisateur aura accès à différentes fonctionnalités.", 'choices' => $roles, 'multiple' => true, 'expanded' => false, 'required' => true, 'attr' => ['class' => 'js-select2',]])->add('password', PasswordType::class, ['label' => "Mot de passe", 'help' => "Renseignez un mot de passe pour l'utilisateur."])->add('image', FileManagerType::class, ['label' => 'Image de profil',]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => User::class,]);
     }

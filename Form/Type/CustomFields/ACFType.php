@@ -26,7 +26,7 @@ class ACFType extends AbstractType
         $this->entityManager = $entityManager;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['label' => 'Réglages complémentaires', 'entity' => '', 'object_id' => '',]);
 
@@ -34,7 +34,7 @@ class ACFType extends AbstractType
         $resolver->setAllowedTypes('object_id', 'integer');
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $customFieldsGroups = $this->customFieldsGroupRepository->findBy(['entity' => $options['entity']]);
         foreach ($customFieldsGroups as $customFieldsGroup) {

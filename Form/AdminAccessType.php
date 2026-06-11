@@ -19,7 +19,7 @@ class AdminAccessType extends AbstractType
         $this->container = $container;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $roles = [];
         foreach ($this->container->getParameter('security.role_hierarchy.roles') as $key => $value) {
@@ -31,7 +31,7 @@ class AdminAccessType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => AdminAccess::class,]);
     }

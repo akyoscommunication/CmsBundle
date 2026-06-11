@@ -14,11 +14,11 @@
     },
     {
       "name": "Akyos Communication",
-       "homepage": "https://akyos.com"
+      "homepage": "https://akyos.com"
     }
   ],
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.4",
     "ext-ctype": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
@@ -31,9 +31,12 @@
     "knplabs/knp-paginator-bundle": "*",
     "stof/doctrine-extensions-bundle": "^1.9",
     "symfony/apache-pack": "^1.0",
-    "symfony/mailer": ">=6.0",
-    "symfony/webpack-encore-bundle": ">=1.0",
-    "karser/karser-recaptcha3-bundle": "^0.1.0@dev"
+    "symfony/framework-bundle": "^8.0",
+    "symfony/mailer": "^8.0",
+    "symfony/webpack-encore-bundle": "^2.0",
+    "karser/karser-recaptcha3-bundle": "^0.1.0@dev",
+    "akyos/core-bundle": "^8.0",
+    "akyos/builder-bundle": "^8.0"
   },
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^3.4",
@@ -44,10 +47,10 @@
     "pre-autoload-dump": [
       "composer config extra.symfony.allow-contrib true"
     ],
-    "after-install-dependencies": [
-    ]
+    "after-install-dependencies": []
   },
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Akyos\\CmsBundle\\": ""
