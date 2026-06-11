@@ -71,8 +71,8 @@ class Option implements Translatable
     public function getValue()
     {
         try {
-            $testJson = json_decode($this->value, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
+            $testJson = json_decode((string) $this->value, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
             return $this->value;
         }
         if (json_last_error() === JSON_ERROR_NONE) {

@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: OptionCategoryRepository::class)]
-class OptionCategory
+class OptionCategory implements \Stringable
 {
     use TimestampableEntity;
 
@@ -94,8 +94,8 @@ class OptionCategory
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 }

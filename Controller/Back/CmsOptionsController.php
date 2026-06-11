@@ -25,11 +25,7 @@ class CmsOptionsController extends AbstractController
     public function index(CmsOptionsRepository $cmsOptionsRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $cmsOption = $cmsOptionsRepository->findAll();
-        if (!$cmsOption) {
-            $cmsOption = new CmsOptions();
-        } else {
-            $cmsOption = $cmsOption[0];
-        }
+        $cmsOption = $cmsOption ? $cmsOption[0] : new CmsOptions();
         $entities = [];
         $meta = $entityManager->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {

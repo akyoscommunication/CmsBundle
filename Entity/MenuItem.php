@@ -12,7 +12,7 @@ use Gedmo\Translatable\Translatable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MenuItemRepository::class)]
-class MenuItem implements Translatable
+class MenuItem implements Translatable, \Stringable
 {
     use TimestampableEntity;
 
@@ -222,9 +222,9 @@ class MenuItem implements Translatable
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->slug;
+        return (string) $this->slug;
     }
 
     public function getSlug(): ?string

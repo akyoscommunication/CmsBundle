@@ -38,7 +38,7 @@ class AdminAccessController extends AbstractController
         // TODO => Améliorer la recherche des classes sans avoir à manipuler le nom du dossier vendor
         if (file_exists($this->getParameter('kernel.project_dir') . '/vendor/akyos')) {
             foreach ($finder->directories()->in($this->getParameter('kernel.project_dir') . '/vendor/akyos') as $bundleDirectory) {
-                $filename = ucfirst(explode('-', $bundleDirectory->getFilename())[0]).'Bundle';
+                $filename = ucfirst(explode('-', (string) $bundleDirectory->getFilename())[0]).'Bundle';
                 if (class_exists('Akyos\\' . $filename . '\Service\ExtendAdminAccess') && method_exists('Akyos\\' . $filename . '\Service\ExtendAdminAccess', 'setDefaults')) {
                     $this->forward('Akyos\\' . $filename . '\Service\ExtendAdminAccess::setDefaults', []);
                 }

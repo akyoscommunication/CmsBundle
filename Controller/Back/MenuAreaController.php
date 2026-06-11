@@ -84,7 +84,7 @@ class MenuAreaController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $menuArea->getId(), $request->request->get('_token'))) {
             $menu = $menuArea->getMenu();
-            if ($menu) {
+            if ($menu instanceof \Akyos\CmsBundle\Entity\Menu) {
                 $menu->setMenuArea(null);
             }
             $entityManager->remove($menuArea);

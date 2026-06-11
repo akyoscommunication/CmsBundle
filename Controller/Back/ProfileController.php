@@ -40,7 +40,7 @@ class ProfileController extends AbstractController
         $form = $this->createForm(UserEditType::class, $user, ['hasPasswordField' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('modifyPassword')->getData() and array_key_exists('password', $form->getExtraData())) {
+            if ($form->get('modifyPassword')->getData() && array_key_exists('password', $form->getExtraData())) {
                 $password = $form->getExtraData()['password'];
                 $user->setPassword($passwordHasher->hashPassword($user, $password));
             }

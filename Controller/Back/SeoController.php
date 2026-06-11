@@ -24,7 +24,7 @@ class SeoController extends AbstractController
     #[Route(path: '/render', name: 'render', methods: ['GET'])]
     public function index($type, $typeId, SeoRepository $seoRepository): Response
     {
-        $type = urldecode($type);
+        $type = urldecode((string) $type);
         $seo = $seoRepository->findOneBy(['type' => $type, 'typeId' => $typeId]);
         if (!$seo) {
             $seo = new Seo();
@@ -46,7 +46,7 @@ class SeoController extends AbstractController
     #[Route(path: '/submit/{type}/{typeId}', name: 'submit', methods: ['POST'], options: ['expose' => true])]
     public function submit($type, $typeId, Request $request, SeoRepository $seoRepository, EntityManagerInterface $entityManager): JsonResponse
     {
-        $type = urldecode($type);
+        $type = urldecode((string) $type);
         $seo = $seoRepository->findOneBy(['type' => $type, 'typeId' => $typeId]);
         if (!$seo) {
             $seo = new Seo();

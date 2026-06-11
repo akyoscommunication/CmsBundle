@@ -11,8 +11,9 @@ use Gedmo\Translatable\Translatable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
-class Page implements Translatable
+class Page implements Translatable, \Stringable
 {
+    public $locale;
     use TimestampableEntity;
 
     public const ENTITY_SLUG = "pages";
@@ -144,7 +145,7 @@ class Page implements Translatable
         return $this;
     }
 
-    public function setTranslatableLocale($locale)
+    public function setTranslatableLocale($locale): void
     {
         $this->locale = $locale;
     }

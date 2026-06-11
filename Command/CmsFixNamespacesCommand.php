@@ -16,19 +16,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CmsFixNamespacesCommand extends Command
 {
-    private EntityManagerInterface $em;
+    private readonly EntityManagerInterface $em;
 
-    private CmsExtension $cmsExtension;
-
-    public function __construct(EntityManagerInterface $em, CmsExtension $cmsExtension)
+    public function __construct(EntityManagerInterface $em, private readonly CmsExtension $cmsExtension)
     {
         $this->em = $em;
-        $this->cmsExtension = $cmsExtension;
         parent::__construct();
     }
 
-    protected function configure()
-    {
+    protected function configure(): void    {
         $this->setDescription('Fix les namespaces du cms.');
     }
 

@@ -12,7 +12,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
-class Menu implements Translatable
+class Menu implements Translatable, \Stringable
 {
     use TimestampableEntity;
 
@@ -42,9 +42,9 @@ class Menu implements Translatable
         $this->menuItems = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getId(): ?int
@@ -114,14 +114,14 @@ class Menu implements Translatable
 
     public function setMenuArea(?MenuArea $menuArea): self
     {
-        if (($menuArea === null) && $this->getMenuArea()->getMenu() === $this) {
+        if ((!$menuArea instanceof \Akyos\CmsBundle\Entity\MenuArea) && $this->getMenuArea()->getMenu() === $this) {
             $this->getMenuArea()->setMenu(null);
         }
         $this->menuArea = $menuArea;
 
         // set (or unset) the owning side of the relation if necessary
-        $newMenu = null === $menuArea ? null : $this;
-        if (($menuArea !== null) && $menuArea->getMenu() !== $newMenu) {
+        $newMenu = $menuArea instanceof \Akyos\CmsBundle\Entity\MenuArea ? $this : null;
+        if (($menuArea instanceof \Akyos\CmsBundle\Entity\MenuArea) && $menuArea->getMenu() !== $newMenu) {
             $menuArea->setMenu($newMenu);
         }
 

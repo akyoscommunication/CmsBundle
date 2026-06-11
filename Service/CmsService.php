@@ -12,17 +12,11 @@ use ReflectionClassConstant;
 
 class CmsService
 {
-    private EntityManagerInterface $em;
+    private readonly EntityManagerInterface $em;
 
-    private CustomFieldValueRepository $customFieldValueRepository;
-
-    private CustomFieldRepository $customFieldRepository;
-
-    public function __construct(EntityManagerInterface $em, CustomFieldValueRepository $customFieldValueRepository, CustomFieldRepository $customFieldRepository)
+    public function __construct(EntityManagerInterface $em, private readonly CustomFieldValueRepository $customFieldValueRepository, private readonly CustomFieldRepository $customFieldRepository)
     {
         $this->em = $em;
-        $this->customFieldValueRepository = $customFieldValueRepository;
-        $this->customFieldRepository = $customFieldRepository;
     }
 
     /**
@@ -33,10 +27,7 @@ class CmsService
     {
         $opt = $this->em->getRepository(CmsOptions::class)->findAll();
         if ($opt) {
-            if (in_array($entity, $opt[0]->getHasSingleEntities(), true)) {
-                return true;
-            }
-            return false;
+            return in_array($entity, $opt[0]->getHasSingleEntities(), true);
         }
         return false;
     }
@@ -49,10 +40,7 @@ class CmsService
     {
         $opt = $this->em->getRepository(CmsOptions::class)->findAll();
         if ($opt) {
-            if (in_array($entity, $opt[0]->getHasArchiveEntities(), true)) {
-                return true;
-            }
-            return false;
+            return in_array($entity, $opt[0]->getHasArchiveEntities(), true);
         }
         return false;
     }
@@ -65,10 +53,7 @@ class CmsService
     {
         $opt = $this->em->getRepository(CmsOptions::class)->findAll();
         if ($opt) {
-            if (in_array($entity, $opt[0]->getHasSeoEntities(), true)) {
-                return true;
-            }
-            return false;
+            return in_array($entity, $opt[0]->getHasSeoEntities(), true);
         }
         return false;
     }
@@ -84,10 +69,7 @@ class CmsService
         if (class_exists($bundle)) {
             $opt = $this->em->getRepository($options)->findAll();
             if ($opt) {
-                if (in_array($entity, $opt[0]->getHasBuilderEntities(), true)) {
-                    return true;
-                }
-                return false;
+                return in_array($entity, $opt[0]->getHasBuilderEntities(), true);
             }
             return false;
         }
@@ -109,7 +91,7 @@ class CmsService
                 $constant_value = $constant_reflex->getValue();
                 if ((null !== $constant_value) && $m->getName()::ENTITY_SLUG === $entitySlug) {
                     $entityFullName = $m->getName();
-                    $entity = array_reverse(explode('\\', $entityFullName))[0];
+                    $entity = array_reverse(explode('\\', (string) $entityFullName))[0];
                 }
             }
         }
@@ -202,26 +184,18 @@ class CmsService
             $operator = $customField['operator'];
             $value = $customField['value'];
 
-            switch ($operator) {
-                case 'IN':
-                    $customFieldValuesQuery->andWhere('cfv.value IN(:customFieldValue)');
-                    break;
-                case 'REGEXP':
-                    $customFieldValuesQuery->andWhere('REGEXP(cfv.value, :customFieldValue) = 1');
-                    break;
-                default:
-                    $customFieldValuesQuery->andWhere('cfv.value '.$operator.' :customFieldValue');
-                    break;
-            }
+            match ($operator) {
+                'IN' => $customFieldValuesQuery->andWhere('cfv.value IN(:customFieldValue)'),
+                'REGEXP' => $customFieldValuesQuery->andWhere('REGEXP(cfv.value, :customFieldValue) = 1'),
+                default => $customFieldValuesQuery->andWhere('cfv.value '.$operator.' :customFieldValue'),
+            };
 
             $customFieldValuesQuery->andWhere('cf.slug = :customFieldSlug')->setParameter('customFieldSlug', $slug)->setParameter('customFieldValue', $value);
         }
 
         $customFieldValues = $customFieldValuesQuery->getQuery()->getResult();
 
-        $elementsIds = array_map(static function (CustomFieldValue $value) {
-            return $value->getObjectId();
-        }, $customFieldValues);
+        $elementsIds = array_map(static fn(CustomFieldValue $value) => $value->getObjectId(), $customFieldValues);
 
         $elementsQuery = $this->em->getRepository($entity)->createQueryBuilder('element');
         $elementsQuery->andWhere('element.id IN (:elementsIds)')->setParameter('elementsIds', $elementsIds);

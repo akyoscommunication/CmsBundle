@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Akyos\CmsBundle\Twig;
 
 use Akyos\CmsBundle\Repository\CmsOptionsRepository;
@@ -9,14 +11,8 @@ use Twig\Extension\GlobalsInterface;
 
 class GlobalsExtension extends AbstractExtension implements GlobalsInterface
 {
-    protected CmsOptionsRepository $cmsOptionsRepository;
-
-    protected RgpdOptionsRepository $rgpdOptionsRepository;
-
-    public function __construct(CmsOptionsRepository $cmsOptionsRepository, RgpdOptionsRepository $rgpdOptionsRepository)
+    public function __construct(protected CmsOptionsRepository $cmsOptionsRepository, protected RgpdOptionsRepository $rgpdOptionsRepository)
     {
-        $this->cmsOptionsRepository = $cmsOptionsRepository;
-        $this->rgpdOptionsRepository = $rgpdOptionsRepository;
     }
 
     /**

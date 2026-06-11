@@ -24,7 +24,7 @@ class CmsBundleController extends AbstractController
 
     public function renderMenu($menu, $page): string
     {
-        $menuArea = $this->entityManager->getRepository(MenuArea::class)->findOneBy(['slug' => $menu]) ?? (!$this->entityManager->getMetadataFactory()->isTransient(Translation::class) ? $this->entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $menu, MenuArea::class) : null);
+        $menuArea = $this->entityManager->getRepository(MenuArea::class)->findOneBy(['slug' => $menu]) ?? ($this->entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $this->entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $menu, MenuArea::class));
         return $this->renderView('@AkyosCms/menu/render.html.twig', ['menu' => $menuArea, 'currentPage' => $page,]);
     }
 }

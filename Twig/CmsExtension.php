@@ -40,30 +40,30 @@ class CmsExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('dynamicVariable', [$this, 'dynamicVariable']),
-            new TwigFunction('hasSeo', [$this, 'hasSeo']),
-            new TwigFunction('getEntitySlug', [$this, 'getEntitySlug']),
-            new TwigFunction('getEntityNameSpace', [$this, 'getEntityNameSpace']),
-            new TwigFunction('isArchive', [$this, 'isArchive']),
-            new TwigFunction('getMenu', [$this, 'getMenu']),
-            new TwigFunction('useClosure', [$this, 'useClosure']),
-            new TwigFunction('getOption', [$this, 'getOption']),
-            new TwigFunction('getOptions', [$this, 'getOptions']),
-            new TwigFunction('getElementSlug', [$this, 'getElementSlug']),
-            new TwigFunction('getElement', [$this, 'getElement']),
-            new TwigFunction('getElementsList', [$this, 'getElementsList']),
-            new TwigFunction('getCategoryList', [$this, 'getCategoryList']),
-            new TwigFunction('getPermalink', [$this, 'getPermalink']),
-            new TwigFunction('getPermalinkById', [$this, 'getPermalinkById']),
-            new TwigFunction('checkChildActive', [$this, 'checkChildActive']),
-            new TwigFunction('getCustomField', [$this->cmsService, 'getCustomField']),
-            new TwigFunction('setCustomField', [$this->cmsService, 'setCustomField']),
-            new TwigFunction('searchByCustomField', [$this->cmsService, 'searchByCustomField']),
-            new TwigFunction('getBundleTab', [$this, 'getBundleTab']),
-            new TwigFunction('getBundleTabContent', [$this, 'getBundleTabContent']),
-            new TwigFunction('getBundleSidebar', [$this->sidebarService, 'getBundleSidebar']),
-            new TwigFunction('getCustomSidebar', [$this->sidebarService, 'getCustomSidebar']),
-            new TwigFunction('getOptionsSidebar', [$this->sidebarService, 'getOptionsSidebar']),
+            new TwigFunction('dynamicVariable', $this->dynamicVariable(...)),
+            new TwigFunction('hasSeo', $this->hasSeo(...)),
+            new TwigFunction('getEntitySlug', $this->getEntitySlug(...)),
+            new TwigFunction('getEntityNameSpace', $this->getEntityNameSpace(...)),
+            new TwigFunction('isArchive', $this->isArchive(...)),
+            new TwigFunction('getMenu', $this->getMenu(...)),
+            new TwigFunction('useClosure', $this->useClosure(...)),
+            new TwigFunction('getOption', $this->getOption(...)),
+            new TwigFunction('getOptions', $this->getOptions(...)),
+            new TwigFunction('getElementSlug', $this->getElementSlug(...)),
+            new TwigFunction('getElement', $this->getElement(...)),
+            new TwigFunction('getElementsList', $this->getElementsList(...)),
+            new TwigFunction('getCategoryList', $this->getCategoryList(...)),
+            new TwigFunction('getPermalink', $this->getPermalink(...)),
+            new TwigFunction('getPermalinkById', $this->getPermalinkById(...)),
+            new TwigFunction('checkChildActive', $this->checkChildActive(...)),
+            new TwigFunction('getCustomField', $this->cmsService->getCustomField(...)),
+            new TwigFunction('setCustomField', $this->cmsService->setCustomField(...)),
+            new TwigFunction('searchByCustomField', $this->cmsService->searchByCustomField(...)),
+            new TwigFunction('getBundleTab', $this->getBundleTab(...)),
+            new TwigFunction('getBundleTabContent', $this->getBundleTabContent(...)),
+            new TwigFunction('getBundleSidebar', $this->sidebarService->getBundleSidebar(...)),
+            new TwigFunction('getCustomSidebar', $this->sidebarService->getCustomSidebar(...)),
+            new TwigFunction('getOptionsSidebar', $this->sidebarService->getOptionsSidebar(...)),
         ];
     }
 
@@ -74,14 +74,10 @@ class CmsExtension extends AbstractExtension
      */
     public function dynamicVariable($el, $field)
     {
-        if(!preg_match('/^is/', $field)){
-            $getter = 'get' . $field;
-        }else{
-            $getter = $field;
-        }
-        if (count(explode(';', $field)) > 1) {
-            $getter1 = 'get' . explode(';', $field)[0];
-            $getter2 = 'get' . explode(';', $field)[1];
+        $getter = preg_match('/^is/', (string) $field) ? $field : 'get' . $field;
+        if (count(explode(';', (string) $field)) > 1) {
+            $getter1 = 'get' . explode(';', (string) $field)[0];
+            $getter2 = 'get' . explode(';', (string) $field)[1];
             $value = $el->$getter1() ? $el->$getter1()->$getter2() : '';
         } else {
             $value = $el->$getter();
@@ -119,10 +115,10 @@ class CmsExtension extends AbstractExtension
             return false;
         }
 
-        if (!empty($page) && !is_object($page[0])) {
+        if ($page !== [] && !is_object($page[0])) {
             return false;
         }
-        return (!empty($page) ? ($entity === get_class($page[0])) : false);
+        return ($page === [] ? (false) : $entity === $page[0]::class);
     }
 
     /**
@@ -184,7 +180,7 @@ class CmsExtension extends AbstractExtension
             return false;
         }
 
-        if (false !== stripos($type, "Category")) {
+        if (false !== stripos((string) $type, "Category")) {
             str_replace('Category', '', $type);
         }
 
@@ -192,7 +188,7 @@ class CmsExtension extends AbstractExtension
         $entityFields = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $entityName = explode('\\', $m->getName());
+            $entityName = explode('\\', (string) $m->getName());
             $entityName = $entityName[count($entityName) - 1];
             if (preg_match('/^' . $type . '$/i', $entityName)) {
                 $entityFullName = $m->getName();
@@ -227,7 +223,7 @@ class CmsExtension extends AbstractExtension
         $entityFields = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $entityName = explode('\\', $m->getName());
+            $entityName = explode('\\', (string) $m->getName());
             $entityName = $entityName[count($entityName) - 1];
             if (preg_match('/^' . $type . '$/i', $entityName)) {
                 $entityFullName = $m->getName();
@@ -284,14 +280,14 @@ class CmsExtension extends AbstractExtension
      */
     public function getElementSlug($type, $typeId)
     {
-        if (false !== stripos($type, "Category")) {
+        if (false !== stripos((string) $type, "Category")) {
             $entity = str_replace('Category', '', $type);
         }
 
         $entityFullName = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $entityName = explode('\\', $m->getName());
+            $entityName = explode('\\', (string) $m->getName());
             $entityName = $entityName[count($entityName) - 1];
             if (preg_match('/^' . $type . '$/i', $entityName)) {
                 $entityFullName = $m->getName();
@@ -327,7 +323,7 @@ class CmsExtension extends AbstractExtension
         $entityFullName = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $entityName = explode('\\', $m->getName());
+            $entityName = explode('\\', (string) $m->getName());
             $entityName = $entityName[count($entityName) - 1];
             if (preg_match('/^' . $entity . '$/i', $entityName)) {
                 $entityFullName = $m->getName();
@@ -348,7 +344,7 @@ class CmsExtension extends AbstractExtension
         $urlPaterne = "/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:_\/?#[\]@!\$&'\(\)\*\+,;=.]+$/";
         $link = '';
         if ($item->getUrl()) {
-            if (preg_match($urlPaterne, $item->getUrl())) {
+            if (preg_match($urlPaterne, (string) $item->getUrl())) {
                 $link = $item->getUrl();
             } else {
                 // Bad way, not taking the basePath
@@ -410,25 +406,21 @@ class CmsExtension extends AbstractExtension
             return false;
         }
 
-        if (false !== stripos($type, "Category")) {
+        if (false !== stripos((string) $type, "Category")) {
             str_replace('Category', '', $type);
         }
 
         $entityFullName = null;
         $meta = $this->em->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            $entityName = explode('\\', $m->getName());
+            $entityName = explode('\\', (string) $m->getName());
             $entityName = $entityName[count($entityName) - 1];
             if (preg_match('/^' . $type . '$/i', $entityName)) {
                 $entityFullName = $m->getName();
             }
         }
 
-        if ($entityFullName) {
-            $slug = $this->em->getRepository($entityFullName)->find($typeId);
-        } else {
-            $slug = "page_externe";
-        }
+        $slug = $entityFullName ? $this->em->getRepository($entityFullName)->find($typeId) : "page_externe";
 
         return $slug;
     }

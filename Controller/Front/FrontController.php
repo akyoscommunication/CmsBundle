@@ -171,7 +171,7 @@ class FrontController extends AbstractController
         // GET CATEGORY FULLNAME FROM ENTITY SLUG
         $categoryFullName = null;
         foreach ($meta as $m) {
-            if (preg_match('/\x5c' . $entity . 'Category$/i', $m->getName())) {
+            if (preg_match('/\x5c' . $entity . 'Category$/i', (string) $m->getName())) {
                 $categoryFullName = $m->getName();
             }
         }
@@ -179,7 +179,7 @@ class FrontController extends AbstractController
             throw $this->createNotFoundException("Cette page n'existe pas! ( Catégorie )");
         }
         // FIND ELEMENTS FROM CATEGORY OBJECT
-        $categoryObject = $entityManager->getRepository($categoryFullName)->findOneBy(['slug' => $category]) ?? (!$entityManager->getMetadataFactory()->isTransient(Translation::class) ? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $category, $categoryFullName) : null);
+        $categoryObject = $entityManager->getRepository($categoryFullName)->findOneBy(['slug' => $category]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $category, $categoryFullName));
         if (!$categoryObject) {
             throw $this->createNotFoundException("Cette page n'existe pas! ( Catégorie )");
         }
@@ -232,7 +232,7 @@ class FrontController extends AbstractController
         // GET TAG FULLNAME FROM ENTITY SLUG
         $tagFullName = null;
         foreach ($meta as $m) {
-            if (preg_match('/' . $entity . '$/i', $m->getName())) {
+            if (preg_match('/' . $entity . '$/i', (string) $m->getName())) {
                 $tagFullName = $m->getName();
             }
         }
@@ -240,11 +240,11 @@ class FrontController extends AbstractController
             throw $this->createNotFoundException("Cette page n'existe pas! ( Étiquette )");
         }
         // FIND ELEMENTS FROM TAG OBJECT
-        $tagObject = $entityManager->getRepository($tagFullName)->findOneBy(['slug' => $tag]) ?? (!$entityManager->getMetadataFactory()->isTransient(Translation::class) ? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $tag, $tagFullName) : null);
+        $tagObject = $entityManager->getRepository($tagFullName)->findOneBy(['slug' => $tag]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $tag, $tagFullName));
         if (!$tagObject) {
             throw $this->createNotFoundException("Cette page n'existe pas! ( Étiquette )");
         }
-        if (str_ends_with($entity, "y")) {
+        if (str_ends_with((string) $entity, "y")) {
             $getter = 'get' . ucfirst(substr($parentEntity, 0, -1)) . 'ies';
         } else {
             $getter = 'get' . ucfirst($parentEntity) . 's';

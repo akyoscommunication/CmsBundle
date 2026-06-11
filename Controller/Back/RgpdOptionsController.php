@@ -26,11 +26,7 @@ class RgpdOptionsController extends AbstractController
     public function index(RgpdOptionsRepository $rgpdOptionsRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $rgpdOption = $rgpdOptionsRepository->findAll();
-        if (!$rgpdOption) {
-            $rgpdOption = new RgpdOptions();
-        } else {
-            $rgpdOption = $rgpdOption[0];
-        }
+        $rgpdOption = $rgpdOption ? $rgpdOption[0] : new RgpdOptions();
         $form = $this->createForm(RgpdOptionsType::class, $rgpdOption);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -40,9 +40,7 @@ class UserController extends AbstractController
         }
         $els = $paginator->paginate($query->getQuery(), $request->query->getInt('page', 1), 12);
         foreach ($els as $user) {
-            $newUserRoles = array_map(static function ($n) use ($flippedRoles) {
-                return $flippedRoles[$n];
-            }, $user->getRoles());
+            $newUserRoles = array_map(static fn($n) => $flippedRoles[$n], $user->getRoles());
             $user->setRoles($newUserRoles);
         }
         return $this->render('@AkyosCms/crud/index.html.twig', ['els' => $els, 'title' => 'Utilisateurs', 'entity' => 'User', 'route' => 'user', 'fields' => ['ID' => 'Id', 'Email' => 'Email', 'Rôles' => 'RolesDisplay'],]);

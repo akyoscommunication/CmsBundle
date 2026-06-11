@@ -26,39 +26,16 @@ class OptionType extends AbstractType
         $this->optionId = $options['option'];
         $this->pages = $options['pages'];
 
-        switch ($builder->getData()->getType()) {
-            case 'textarea':
-                $builder->add('value', CKEditorType::class, ['required' => false, 'config' => ['placeholder' => "Texte", 'height' => 50, 'entities' => false, 'basicEntities' => false, 'entities_greek' => false, 'entities_latin' => false,], 'label' => false,]);
-                break;
-
-            case 'tel':
-                $builder->add('value', TelType::class, ['attr' => ['placeholder' => "Numéro",], 'label' => false, 'required' => false,]);
-                break;
-
-            case 'mail':
-                $builder->add('value', EmailType::class, ['attr' => ['placeholder' => "Email",], 'label' => false, 'required' => false]);
-                break;
-
-            case 'pagelink':
-                $builder->add('value', ChoiceType::class, ['choices' => $this->pages, 'label' => false]);
-                break;
-
-            case 'link':
-                $builder->add('value', UrlType::class, ['attr' => ['placeholder' => "Lien",], 'label' => false, 'required' => false]);
-                break;
-
-            case 'image':
-                $builder->add('value', FileManagerType::class, ['config' => 'full']);
-                break;
-
-            case 'gallery':
-                $builder->add('value', FileManagerCollectionType::class);
-                break;
-
-            default:
-                $builder->add('value', TextType::class, ['attr' => ['placeholder' => "Valeur",], 'label' => false, 'required' => false]);
-                break;
-        }
+        match ($builder->getData()->getType()) {
+            'textarea' => $builder->add('value', CKEditorType::class, ['required' => false, 'config' => ['placeholder' => "Texte", 'height' => 50, 'entities' => false, 'basicEntities' => false, 'entities_greek' => false, 'entities_latin' => false,], 'label' => false,]),
+            'tel' => $builder->add('value', TelType::class, ['attr' => ['placeholder' => "Numéro",], 'label' => false, 'required' => false,]),
+            'mail' => $builder->add('value', EmailType::class, ['attr' => ['placeholder' => "Email",], 'label' => false, 'required' => false]),
+            'pagelink' => $builder->add('value', ChoiceType::class, ['choices' => $this->pages, 'label' => false]),
+            'link' => $builder->add('value', UrlType::class, ['attr' => ['placeholder' => "Lien",], 'label' => false, 'required' => false]),
+            'image' => $builder->add('value', FileManagerType::class, ['config' => 'full']),
+            'gallery' => $builder->add('value', FileManagerCollectionType::class),
+            default => $builder->add('value', TextType::class, ['attr' => ['placeholder' => "Valeur",], 'label' => false, 'required' => false]),
+        };
     }
 
     public function configureOptions(OptionsResolver $resolver): void

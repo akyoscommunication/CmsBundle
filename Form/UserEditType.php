@@ -20,9 +20,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserEditType extends AbstractType
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
+    private readonly AuthorizationCheckerInterface $authorizationChecker;
 
-    private ContainerInterface $container;
+    private readonly ContainerInterface $container;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, ContainerInterface $container)
     {
@@ -66,7 +66,7 @@ class UserEditType extends AbstractType
                 'data' => $options['modifyPassword']
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();
             $modifyPassword = $form->get('modifyPassword')->getData();
             if ($modifyPassword) {
@@ -76,7 +76,7 @@ class UserEditType extends AbstractType
         }
     }
 
-    public function addPasswordField(FormInterface $form) {
+    public function addPasswordField(FormInterface $form): void {
         $form->add('password', PasswordType::class, [
             'label' => "Mot de passe",
             'help' => "Renseignez un mot de passe pour l'utilisateur.",

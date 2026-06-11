@@ -24,28 +24,25 @@ use Twig\Error\SyntaxError;
 
 class FrontControllerService
 {
-    private EntityManagerInterface $em;
+    private readonly EntityManagerInterface $em;
 
-    private RouterInterface $router;
+    private readonly RouterInterface $router;
 
-    private Filesystem $filesystem;
+    private readonly Filesystem $filesystem;
 
-    private KernelInterface $kernel;
+    private readonly KernelInterface $kernel;
 
-    private Environment $environment;
+    private readonly Environment $environment;
 
-    private CmsService $cmsService;
+    private readonly AuthorizationCheckerInterface $checker;
 
-    private AuthorizationCheckerInterface $checker;
-
-    public function __construct(EntityManagerInterface $em, RouterInterface $router, Filesystem $filesystem, KernelInterface $kernel, Environment $environment, CmsService $cmsService, AuthorizationCheckerInterface $checker)
+    public function __construct(EntityManagerInterface $em, RouterInterface $router, Filesystem $filesystem, KernelInterface $kernel, Environment $environment, private readonly CmsService $cmsService, AuthorizationCheckerInterface $checker)
     {
         $this->em = $em;
         $this->router = $router;
         $this->filesystem = $filesystem;
         $this->kernel = $kernel;
         $this->environment = $environment;
-        $this->cmsService = $cmsService;
         $this->checker = $checker;
     }
 
@@ -67,10 +64,10 @@ class FrontControllerService
             throw new NotFoundHttpException("Cette page n'existe pas! ( Détail )");
         }
 
-        $slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
+        $slug = str_ends_with($slug, "/") ? substr($slug, 0, -1) : $slug;
 
         // GET ELEMENT
-        $element = $this->em->getRepository($entityFullName)->findOneBy(['slug' => $slug]) ?? (!$this->em->getMetadataFactory()->isTransient(Translation::class) ? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entityFullName) : null);
+        $element = $this->em->getRepository($entityFullName)->findOneBy(['slug' => $slug]) ?? ($this->em->getMetadataFactory()->isTransient(Translation::class) ? null : $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entityFullName));
         $now = new DateTime();
 
         if (!$element) {
@@ -127,9 +124,9 @@ class FrontControllerService
     {
         // FIND PAGE
         $entity = Page::class;
-        $slug = substr($slug, -1) === "/" ? substr($slug, 0, -1) : $slug;
+        $slug = str_ends_with($slug, "/") ? substr($slug, 0, -1) : $slug;
         /** @var Page $page */
-        $page = $this->em->getRepository($entity)->findOneBy(['slug' => $slug]) ?? (!$this->em->getMetadataFactory()->isTransient(Translation::class) ? $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entity) : null);
+        $page = $this->em->getRepository($entity)->findOneBy(['slug' => $slug]) ?? ($this->em->getMetadataFactory()->isTransient(Translation::class) ? null : $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entity));
         $now = new DateTime();
 
         if (!$page) {

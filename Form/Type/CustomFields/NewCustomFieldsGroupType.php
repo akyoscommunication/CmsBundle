@@ -13,9 +13,7 @@ class NewCustomFieldsGroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('title', TextType::class, ['label' => 'Nom du groupe', 'help' => 'Donnez un titre à votre groupe de champs !',])->add('entity', ChoiceType::class, ['label' => 'Entité liée', 'help' => 'A quelle entité souhaitez vous ajouter des champs ?', 'required' => false, 'choices' => $options['entities'], 'choice_label' => function ($choice, $key, $value) {
-                return $value;
-            }, 'multiple' => false, 'expanded' => false,]);
+        $builder->add('title', TextType::class, ['label' => 'Nom du groupe', 'help' => 'Donnez un titre à votre groupe de champs !',])->add('entity', ChoiceType::class, ['label' => 'Entité liée', 'help' => 'A quelle entité souhaitez vous ajouter des champs ?', 'required' => false, 'choices' => $options['entities'], 'choice_label' => fn($choice, $key, $value) => $value, 'multiple' => false, 'expanded' => false,]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

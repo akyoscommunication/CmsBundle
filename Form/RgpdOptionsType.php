@@ -37,22 +37,16 @@ class RgpdOptionsType extends AbstractType
             ->add('contactPage', EntityType::class, [
                 'label' => 'Page contact',
                 'class' => Page::class,
-                'query_builder' => static function (PageRepository $er) {
-                    return $er->createQueryBuilder('p')
-                        ->orderBy('p.position', 'ASC')
-                        ;
-                },
+                'query_builder' => static fn(PageRepository $er) => $er->createQueryBuilder('p')
+                    ->orderBy('p.position', 'ASC'),
                 'choice_label' => 'title',
                 'placeholder' => 'Sélectionnez la page de contact'
             ])
             ->add('policyPage', EntityType::class, [
                 'label' => 'Page politique de confidentialité',
                 'class' => Page::class,
-                'query_builder' => static function (PageRepository $er) {
-                    return $er->createQueryBuilder('p')
-                        ->orderBy('p.position', 'ASC')
-                        ;
-                },
+                'query_builder' => static fn(PageRepository $er) => $er->createQueryBuilder('p')
+                    ->orderBy('p.position', 'ASC'),
                 'choice_label' => 'title',
                 'placeholder' => 'Sélectionnez la page politique de confidentialité'
             ])

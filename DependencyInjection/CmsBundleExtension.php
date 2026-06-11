@@ -21,7 +21,7 @@ class CmsBundleExtension extends Extension implements PrependExtensionInterface
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         try {
             $loader->load('services.yaml');
-        } catch (Exception $e) {
+        } catch (Exception) {
 //            dd($e);
         }
 

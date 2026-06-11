@@ -67,7 +67,7 @@ class ExportController extends AbstractController
         foreach ($properties as $key => $p) {
             $propertyName = $properties[$key];
             $propertyType = $propertyInfo->getTypes($entity, $p);
-            if ($propertyType && !in_array($propertyType[0]->getClassName(), $allreadyCheck, true) && count(explode('\\', $propertyType[0]->getClassName())) > 1) {
+            if ($propertyType && !in_array($propertyType[0]->getClassName(), $allreadyCheck, true) && count(explode('\\', (string) $propertyType[0]->getClassName())) > 1) {
                 $returnedTab = $this->pushProperties($propertyType[0]->getClassName(), $propertyInfo->getProperties($propertyType[0]->getClassName()), $propertyInfo, $returnedTab, $allreadyCheck, ($currentDepth ?? '') . $propertyName . '.');
             } elseif ($propertyType) {
                 /** @var \Symfony\Component\PropertyInfo\Type $type */
@@ -131,7 +131,7 @@ class ExportController extends AbstractController
             $value = implode('|', $value);
         }
         if (is_object($value)) {
-            switch (get_class($value)) {
+            switch ($value::class) {
                 case 'DateTime':
                     $value = $value->format('d/m/Y H:i:s');
                     break;

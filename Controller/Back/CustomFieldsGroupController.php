@@ -38,7 +38,7 @@ class CustomFieldsGroupController extends AbstractController
         $entities = [];
         $meta = $entityManager->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
+            if (!preg_match('/Component|Option|ContactForm/i', (string) $m->getName()) && stripos((string) $m->getName(), 'Akyos') !== false) {
                 $entities[] = $m->getName();
             }
         }
@@ -66,7 +66,7 @@ class CustomFieldsGroupController extends AbstractController
         $entities = [];
         $meta = $entityManager->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
+            if (!preg_match('/Component|Option|ContactForm/i', (string) $m->getName()) && stripos((string) $m->getName(), 'Akyos') !== false) {
                 $entities[] = $m->getName();
             }
         }
@@ -95,10 +95,10 @@ class CustomFieldsGroupController extends AbstractController
         $entities = [];
         $meta = $entityManager->getMetadataFactory()->getAllMetadata();
         foreach ($meta as $m) {
-            if (!preg_match('/Component|Option|ContactForm/i', $m->getName()) && stripos($m->getName(), 'Akyos') !== false) {
+            if (!preg_match('/Component|Option|ContactForm/i', (string) $m->getName()) && stripos((string) $m->getName(), 'Akyos') !== false) {
                 $akyosEntities[] = $m->getName();
             }
-            if (!preg_match('/Component|Option|ContactForm/i', $m->getName())) {
+            if (!preg_match('/Component|Option|ContactForm/i', (string) $m->getName())) {
                 $entities[] = $m->getName();
             }
         }
@@ -142,7 +142,7 @@ class CustomFieldsGroupController extends AbstractController
     public function changeValue($id, $slug, $callback, Request $request, CustomFieldValueRepository $customFieldValueRepository, CustomFieldRepository $customFieldRepository, EntityManagerInterface $entityManager)
     {
         $newValue = $request->get('data');
-        $customField = $customFieldRepository->findOneBy(['slug' => $slug]) ?? (!$entityManager->getMetadataFactory()->isTransient(Translation::class) ? $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, CustomField::class) : null);
+        $customField = $customFieldRepository->findOneBy(['slug' => $slug]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, CustomField::class));
         $customFieldValue = $customFieldValueRepository->findOneBy(['customField' => $customField, 'objectId' => $id]);
         if (!$customFieldValue) {
             $customFieldValue = new CustomFieldValue();
@@ -152,6 +152,6 @@ class CustomFieldsGroupController extends AbstractController
             $customFieldValue->setValue($newValue);
         }
         $entityManager->flush();
-        return $this->redirect(urldecode($callback));
+        return $this->redirect(urldecode((string) $callback));
     }
 }

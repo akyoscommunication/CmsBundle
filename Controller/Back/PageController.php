@@ -77,7 +77,7 @@ class PageController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Page $page, CmsService $cmsService, ContainerInterface $container, EntityManagerInterface $entityManager): Response
     {
-        $entity = get_class($page);
+        $entity = $page::class;
         $form = $this->createForm(PageType::class, $page);
         $form->handleRequest($request);
         $classBuilder = AkyosBuilderBundle::class;
@@ -112,7 +112,7 @@ class PageController extends AbstractController
     #[Route(path: '/{id}', name: 'delete', methods: ['DELETE', 'POST'])]
     public function delete(Request $request, Page $page, PageRepository $pageRepository, SeoRepository $seoRepository, CmsService $cmsService, ContainerInterface $container, EntityManagerInterface $entityManager): Response
     {
-        $entity = get_class($page);
+        $entity = $page::class;
         if ($this->isCsrfTokenValid('delete' . $page->getId(), $request->request->get('_token'))) {
             $classBuilder = AkyosBuilderBundle::class;
             $classBuilderOption = BuilderOptions::class;

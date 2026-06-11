@@ -9,14 +9,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class AccessVoter extends Voter
 {
-    private Security $security;
+    private readonly Security $security;
 
-    private AdminAccessRepository $adminAccessRepository;
-
-    public function __construct(Security $security, AdminAccessRepository $adminAccessRepository)
+    public function __construct(Security $security, private readonly AdminAccessRepository $adminAccessRepository)
     {
         $this->security = $security;
-        $this->adminAccessRepository = $adminAccessRepository;
     }
 
     protected function supports($attribute, $subject): bool

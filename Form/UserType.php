@@ -15,9 +15,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserType extends AbstractType
 {
-    private AuthorizationCheckerInterface $authorizationChecker;
+    private readonly AuthorizationCheckerInterface $authorizationChecker;
 
-    private ContainerInterface $container;
+    private readonly ContainerInterface $container;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, ContainerInterface $container)
     {
@@ -31,10 +31,8 @@ class UserType extends AbstractType
         if (!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             unset($roles['Super Admin']);
         }
-        if (!$this->authorizationChecker->isGranted('ROLE_AKYOS')) {
-            if (array_key_exists('ROLE_AKYOS', $roles)) {
-                unset($roles['Akyos']);
-            }
+        if (!$this->authorizationChecker->isGranted('ROLE_AKYOS') && array_key_exists('ROLE_AKYOS', $roles)) {
+            unset($roles['Akyos']);
         }
 
         $builder->add('email', EmailType::class, ['label' => "E-mail", 'help' => "Renseignez l'email de l'utilisateur"])->add('roles', ChoiceType::class, ['label' => "Rôle de l'utilisateur", 'help' => "En fonction de son rôle, l'utilisateur aura accès à différentes fonctionnalités.", 'choices' => $roles, 'multiple' => true, 'expanded' => false, 'required' => true, 'attr' => ['class' => 'js-select2',]])->add('password', PasswordType::class, ['label' => "Mot de passe", 'help' => "Renseignez un mot de passe pour l'utilisateur."])->add('image', FileManagerType::class, ['label' => 'Image de profil',]);

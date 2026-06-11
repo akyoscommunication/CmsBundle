@@ -9,7 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Translatable\Translatable;
 
 #[ORM\Entity(repositoryClass: MenuAreaRepository::class)]
-class MenuArea implements Translatable
+class MenuArea implements Translatable, \Stringable
 {
     use TimestampableEntity;
 
@@ -33,9 +33,9 @@ class MenuArea implements Translatable
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     public function getId(): ?int

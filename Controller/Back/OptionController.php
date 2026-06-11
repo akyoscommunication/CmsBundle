@@ -40,7 +40,7 @@ class OptionController extends AbstractController
                     $entityManager->persist($option);
                     $entityManager->flush();
                     $this->addFlash('success', "Création du réglage effectuée avec succès !");
-                } catch (Exception $e) {
+                } catch (Exception) {
                     $this->addFlash('danger', "Une erreur s'est produite lors de la création du réglage, merci de réssayer.");
                 }
             }
@@ -59,7 +59,7 @@ class OptionController extends AbstractController
                         $entityManager->persist($option);
                         $entityManager->flush();
                         $this->addFlash('success', "Modification du réglage effectuée avec succès !");
-                    } catch (Exception $e) {
+                    } catch (Exception) {
                         $this->addFlash('danger', "Une erreur s'est produite lors de la modification du réglage, merci de réssayer.");
                     }
                 }

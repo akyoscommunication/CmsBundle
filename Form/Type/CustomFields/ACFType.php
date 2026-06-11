@@ -13,16 +13,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ACFType extends AbstractType
 {
-    private CustomFieldValueRepository $customFieldValueRepository;
+    private readonly EntityManagerInterface $entityManager;
 
-    private CustomFieldsGroupRepository $customFieldsGroupRepository;
-
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(CustomFieldValueRepository $customFieldValueRepository, CustomFieldsGroupRepository $customFieldsGroupRepository, EntityManagerInterface $entityManager)
+    public function __construct(private readonly CustomFieldValueRepository $customFieldValueRepository, private readonly CustomFieldsGroupRepository $customFieldsGroupRepository, EntityManagerInterface $entityManager)
     {
-        $this->customFieldValueRepository = $customFieldValueRepository;
-        $this->customFieldsGroupRepository = $customFieldsGroupRepository;
         $this->entityManager = $entityManager;
     }
 
