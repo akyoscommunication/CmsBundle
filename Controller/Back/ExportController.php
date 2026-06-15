@@ -127,7 +127,10 @@ class ExportController extends AbstractController
     public function download(Request $request, EntityManagerInterface $entityManager): Response
     {
         $els = $entityManager->getRepository($request->request->get('entity'))->findAll();
-        $rows = $request->request->get('rows');
+        $rows = $request->request->all()['rows'] ?? [];
+        if (!is_array($rows)) {
+            $rows = $rows !== null && $rows !== '' ? [(string) $rows] : [];
+        }
         $filename = 'export.csv';
         $csv = Writer::createFromString();
         $records = [$rows];
