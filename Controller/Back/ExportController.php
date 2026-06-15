@@ -13,6 +13,9 @@ use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\CollectionType;
+use Symfony\Component\TypeInfo\Type\ObjectType;
 
 #[Route(path: '/admin/export', name: 'export_')]
 #[IsGranted('exports')]
@@ -63,23 +66,56 @@ class ExportController extends AbstractController
      */
     public function pushProperties($entity, $properties, $propertyInfo, $returnedTab, $allreadyCheck, $currentDepth)
     {
+        if (!$properties) {
+            return $returnedTab;
+        }
         $allreadyCheck[] = $entity;
-        foreach ($properties as $key => $p) {
-            $propertyName = $properties[$key];
-            $propertyType = $propertyInfo->getTypes($entity, $p);
-            if ($propertyType && !in_array($propertyType[0]->getClassName(), $allreadyCheck, true) && count(explode('\\', (string) $propertyType[0]->getClassName())) > 1) {
-                $returnedTab = $this->pushProperties($propertyType[0]->getClassName(), $propertyInfo->getProperties($propertyType[0]->getClassName()), $propertyInfo, $returnedTab, $allreadyCheck, ($currentDepth ?? '') . $propertyName . '.');
-            } elseif ($propertyType) {
-                /** @var \Symfony\Component\PropertyInfo\Type $type */
-                $type = $propertyType[0];
-                if ($type && !$type->getCollectionValueTypes()) {
-                    $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $type->getClassName()];
-                }
-            } else {
+        foreach ($properties as $propertyName) {
+            $type = $propertyInfo->getType($entity, $propertyName);
+            if (!$type) {
                 $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $entity];
+                continue;
+            }
+            if ($this->isCollectionType($type)) {
+                continue;
+            }
+            $className = $this->extractObjectClassName($type);
+            if ($className && !in_array($className, $allreadyCheck, true) && str_contains($className, '\\')) {
+                $returnedTab = $this->pushProperties(
+                    $className,
+                    $propertyInfo->getProperties($className) ?? [],
+                    $propertyInfo,
+                    $returnedTab,
+                    $allreadyCheck,
+                    $currentDepth . $propertyName . '.',
+                );
+            } else {
+                $returnedTab[] = ['name' => $currentDepth . $propertyName, 'class' => $className ?? $entity];
             }
         }
         return $returnedTab;
+    }
+
+    private function isCollectionType(Type $type): bool
+    {
+        foreach ($type->traverse() as $traversedType) {
+            if ($traversedType instanceof CollectionType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function extractObjectClassName(Type $type): ?string
+    {
+        foreach ($type->traverse() as $traversedType) {
+            if ($traversedType instanceof ObjectType) {
+                return $traversedType->getClassName();
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -1,5 +1,6 @@
 // import external dependencies
-import 'jquery';
+import jQuery from 'jquery';
+window.jQuery = window.$ = jQuery;
 import 'bootstrap';
 import 'jquery-ui/ui/widgets/sortable';
 
