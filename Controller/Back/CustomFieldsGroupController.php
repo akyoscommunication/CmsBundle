@@ -141,7 +141,7 @@ class CustomFieldsGroupController extends AbstractController
     #[Route(path: '/change-value/{entity}/{id}/{slug}/{callback}', name: 'change_value', methods: ['POST'])]
     public function changeValue($id, $slug, $callback, Request $request, CustomFieldValueRepository $customFieldValueRepository, CustomFieldRepository $customFieldRepository, EntityManagerInterface $entityManager)
     {
-        $newValue = $request->get('data');
+        $newValue = $request->request->get('data');
         $customField = $customFieldRepository->findOneBy(['slug' => $slug]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, CustomField::class));
         $customFieldValue = $customFieldValueRepository->findOneBy(['customField' => $customField, 'objectId' => $id]);
         if (!$customFieldValue) {

@@ -47,8 +47,8 @@ class ExportController extends AbstractController
         $propertyInfo = new PropertyInfoExtractor($listExtractors, $typeExtractors);
         $returnedTab = [];
         $allreadyCheck = [];
-        $properties = $propertyInfo->getProperties($request->get('entity'));
-        $returnedTab = $this->pushProperties($request->get('entity'), $properties, $propertyInfo, $returnedTab, $allreadyCheck, "");
+        $properties = $propertyInfo->getProperties($request->request->get('entity'));
+        $returnedTab = $this->pushProperties($request->request->get('entity'), $properties, $propertyInfo, $returnedTab, $allreadyCheck, "");
         return new JsonResponse($returnedTab);
     }
 
@@ -90,8 +90,8 @@ class ExportController extends AbstractController
     #[Route(path: '/dl', name: 'entity_dl')]
     public function download(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $els = $entityManager->getRepository($request->get('entity'))->findAll();
-        $rows = $request->get('rows');
+        $els = $entityManager->getRepository($request->request->get('entity'))->findAll();
+        $rows = $request->request->get('rows');
         $filename = 'export.csv';
         $csv = Writer::createFromString();
         $records = [$rows];
