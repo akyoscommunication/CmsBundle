@@ -10,7 +10,6 @@ use Akyos\CmsBundle\Entity\Redirect301;
 use Akyos\CmsBundle\Entity\Seo;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Translatable\Entity\Translation;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -67,7 +66,7 @@ class FrontControllerService
         $slug = str_ends_with($slug, "/") ? substr($slug, 0, -1) : $slug;
 
         // GET ELEMENT
-        $element = $this->em->getRepository($entityFullName)->findOneBy(['slug' => $slug]) ?? ($this->em->getMetadataFactory()->isTransient(Translation::class) ? null : $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entityFullName));
+        $element = $this->cmsService->findBySlug($entityFullName, $slug);
         $now = new DateTime();
 
         if (!$element) {
@@ -126,7 +125,7 @@ class FrontControllerService
         $entity = Page::class;
         $slug = str_ends_with($slug, "/") ? substr($slug, 0, -1) : $slug;
         /** @var Page $page */
-        $page = $this->em->getRepository($entity)->findOneBy(['slug' => $slug]) ?? ($this->em->getMetadataFactory()->isTransient(Translation::class) ? null : $this->em->getRepository(Translation::class)->findObjectByTranslatedField('slug', $slug, $entity));
+        $page = $this->cmsService->findBySlug($entity, $slug);
         $now = new DateTime();
 
         if (!$page) {

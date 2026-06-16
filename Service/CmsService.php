@@ -7,7 +7,9 @@ use Akyos\CmsBundle\Entity\CustomFieldValue;
 use Akyos\CmsBundle\Repository\CustomFieldRepository;
 use Akyos\CmsBundle\Repository\CustomFieldValueRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
+use Gedmo\Translatable\Entity\Translation;
 use ReflectionClassConstant;
 
 class CmsService
@@ -236,5 +238,23 @@ class CmsService
         }
 
         return $query ? $elementsQuery->getQuery() : $elementsQuery->getQuery()->getResult();
+    }
+
+    /**
+     * @param class-string $entityClass
+     */
+    public function findBySlug(string $entityClass, string $slug): ?object
+    {
+        $element = $this->em->getRepository($entityClass)->findOneBy(['slug' => $slug]);
+        if ($element !== null || $this->em->getMetadataFactory()->isTransient(Translation::class)) {
+            return $element;
+        }
+
+        try {
+            return $this->em->getRepository(Translation::class)
+                ->findObjectByTranslatedField('slug', $slug, $entityClass);
+        } catch (NoResultException) {
+            return null;
+        }
     }
 }

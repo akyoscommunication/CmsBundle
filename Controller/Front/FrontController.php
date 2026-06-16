@@ -12,7 +12,6 @@ use Akyos\CmsBundle\Repository\SeoRepository;
 use Akyos\CmsBundle\Service\CmsService;
 use Akyos\CmsBundle\Service\FrontControllerService;
 use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Translatable\Entity\Translation;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -179,7 +178,7 @@ class FrontController extends AbstractController
             throw $this->createNotFoundException("Cette page n'existe pas! ( Catégorie )");
         }
         // FIND ELEMENTS FROM CATEGORY OBJECT
-        $categoryObject = $entityManager->getRepository($categoryFullName)->findOneBy(['slug' => $category]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $category, $categoryFullName));
+        $categoryObject = $cmsService->findBySlug($categoryFullName, $category);
         if (!$categoryObject) {
             throw $this->createNotFoundException("Cette page n'existe pas! ( Catégorie )");
         }
@@ -240,7 +239,7 @@ class FrontController extends AbstractController
             throw $this->createNotFoundException("Cette page n'existe pas! ( Étiquette )");
         }
         // FIND ELEMENTS FROM TAG OBJECT
-        $tagObject = $entityManager->getRepository($tagFullName)->findOneBy(['slug' => $tag]) ?? ($entityManager->getMetadataFactory()->isTransient(Translation::class) ? null : $entityManager->getRepository(Translation::class)->findObjectByTranslatedField('slug', $tag, $tagFullName));
+        $tagObject = $cmsService->findBySlug($tagFullName, $tag);
         if (!$tagObject) {
             throw $this->createNotFoundException("Cette page n'existe pas! ( Étiquette )");
         }
